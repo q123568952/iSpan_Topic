@@ -1,0 +1,31 @@
+Lab: jQuery 整合練習
+
+
+1.  滑鼠右鍵點按 Lab_ToDoList | Open in Integrated Terminal
+
+
+2.  在終端機視窗，輸入:
+    「npm install」<Enter>
+
+
+3.  在終端機視窗，繼續輸入:
+    「node app.js」<Enter>
+
+
+4.  使用瀏覽器連接 http://localhost:3000
+
+
+5.  試用其中的新增、修改、刪除功能。
+
+    <Note>
+    資料儲存在 data.json 
+
+
+6.  用 public_0 的檔案，全面取代 public 內的同名檔案
+
+    <Note>
+    public 內的各個檔案，其 JavaScript 全部都清空了。
+
+
+7.  請重新以 jQuery 完成步驟 5 試用過的新增、修改、刪除功能。
+
