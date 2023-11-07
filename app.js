@@ -78,19 +78,38 @@ console.log("「Ctrl + C」可結束伺服器程式.");
     }
     return nameInfo;
 }
-function get5EResult(sancai5E, sancai) {
-    let sancaiKey = Object.keys(sancai);
-	let name5EsToClient={
-		name5EsLevel:"",
-		name5EsResult:""
-	}
-    for (let i = 0; i < sancaiKey.length; i++) {
-        if (sancai5E == sancaiKey[i]) {
-			name5EsToClient.name5EsLevel=sancai[sancaiKey[i]].text;
-			name5EsToClient.name5EsResult=sancai[sancaiKey[i]].content;
-			return name5EsToClient;
-		}
+async function get5EResult(sancai5E) {
+    async function getName5Es(sancai5E){
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select lucklevel, content from sancaidata where fiveelementcombination = ?",
+                [sancai5E],
+                function (err, rows) {
+                    if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    };
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let name5EsLevel =rows[0].lucklevel;
+                    let name5EsResult = rows[0].content;
+                    let name5EsToClient ={
+                        name5EsLevel:name5EsLevel,
+                        name5EsResult:name5EsResult
+                    }
+                    good(name5EsToClient);
+                })
+            })
+            let name5EsToClient = await promise1.catch(
+                function (err) {
+                }
+            );
+            return name5EsToClient;
     }
+    let name5EsToClient = await getName5Es(sancai5E);
+    return name5EsToClient;
 }
 function addColor(sancai5E) {
     let colorSancai5E = "";
@@ -126,7 +145,35 @@ function getPara5E(temp,chinese5E) {
     return para5EList;
 
 }
-function addParaScores(paraScroes, strockesList, chinese5E) {
+async function addParaScores(strockesList, chinese5E) {
+    async function getparaScoresToClient(score){
+        let promise1 = new Promise(function(good,bad){
+            connection.query(
+                "SELECT lucklevel,content FROM nameparameterscore WHERE draw = ?",
+                [score],
+                function (err, rows){
+                    if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    };
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let scoreLevel =rows[0].lucklevel;
+                    let scoreResult = rows[0].content;
+                    let result ={
+                        scoreLevel:scoreLevel,
+                        scoreResult:scoreResult
+                    }
+                    good(result);
+                }
+            )
+        })
+        let result = await promise1.catch(
+            function (err) {})
+        return result;
+    }
     let paraScoresToClient={
 		skyScoreLevel:"",
 		skyScoreResult:"",
@@ -143,16 +190,6 @@ function addParaScores(paraScroes, strockesList, chinese5E) {
         paras:""
 	};
     if (strockesList.length == 4) {
-        paraScoresToClient.skyScoreLevel = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) - 1].text
-        paraScoresToClient.skyScoreResult = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) - 1].content
-        paraScoresToClient.humanScoreLevel = paraScroes[parseInt(strockesList[1]) + parseInt(strockesList[2]) - 1].text
-        paraScoresToClient.humanScoreResult = paraScroes[parseInt(strockesList[1]) + parseInt(strockesList[2]) - 1].content
-        paraScoresToClient.groundScoreLevel = paraScroes[parseInt(strockesList[2]) + parseInt(strockesList[3]) - 1].text
-        paraScoresToClient.groundScoreResult = paraScroes[parseInt(strockesList[2]) + parseInt(strockesList[3]) - 1].content
-        paraScoresToClient.outScoreLevel = paraScroes[parseInt(strockesList[3]) + 1 - 1].text
-        paraScoresToClient.outScoreResult = paraScroes[parseInt(strockesList[3]) + 1 - 1].content
-        paraScoresToClient.totalScoreLevel = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) + parseInt(strockesList[2]) + parseInt(strockesList[3]) - 1].text
-        paraScoresToClient.totalScoreResult = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) + parseInt(strockesList[2]) + parseInt(strockesList[3]) - 1].content
         // 天人地外總
         var paras = [];
         paras.push(parseInt(strockesList[0]) + parseInt(strockesList[1]));
@@ -161,19 +198,17 @@ function addParaScores(paraScroes, strockesList, chinese5E) {
         paras.push(parseInt(strockesList[3]) + 1);
         paras.push(parseInt(strockesList[0]) + parseInt(strockesList[1]) + parseInt(strockesList[2]) + parseInt(strockesList[3]));
         paraScoresToClient.paras = paras;
+        let targetList = ["sky","human","ground", "out", "total"];
+        for (let i = 0; i < paras.length; i++) {
+            let result = await getparaScoresToClient(paras[i]);
+            tempTargetLevel = targetList[i]+"ScoreLevel";
+            tempTargetResult = targetList[i]+"ScoreResult";
+            paraScoresToClient[tempTargetLevel]=result.scoreLevel;
+            paraScoresToClient[tempTargetLevel]=result.scoreResult; 
+        }
         paraScoresToClient.para5EList = getPara5E(paras, chinese5E);
     } else {
-        paraScoresToClient.humanScoreLevel = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) - 1].text
-        paraScoresToClient.humanScoreResult = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) - 1].content
-        paraScoresToClient.groundScoreLevel = paraScroes[parseInt(strockesList[1]) + parseInt(strockesList[2]) - 1].text
-        paraScoresToClient.groundScoreResult = paraScroes[parseInt(strockesList[1]) + parseInt(strockesList[2]) - 1].content
-        paraScoresToClient.skyScoreLevel = paraScroes[parseInt(strockesList[0]) + 1 - 1].text
-        paraScoresToClient.skyScoreResult = paraScroes[parseInt(strockesList[0]) + 1 - 1].content
-        paraScoresToClient.outScoreLevel = paraScroes[parseInt(strockesList[2]) + 1 - 1].text
-        paraScoresToClient.outScoreResult = paraScroes[parseInt(strockesList[2]) + 1 - 1].content
-        paraScoresToClient.totalScoreLevel = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) + parseInt(strockesList[2]) - 1].text
-        paraScoresToClient.totalScoreResult = paraScroes[parseInt(strockesList[0]) + parseInt(strockesList[1]) + parseInt(strockesList[2]) - 1].content
-        // 天人地外總
+// 天人地外總
         var paras = [];
         paras.push(parseInt(strockesList[0]) + 1);
         paras.push(parseInt(strockesList[0]) + parseInt(strockesList[1]));
@@ -181,6 +216,14 @@ function addParaScores(paraScroes, strockesList, chinese5E) {
         paras.push(parseInt(strockesList[2]) + 1);
         paras.push(parseInt(strockesList[0]) + parseInt(strockesList[1]) + parseInt(strockesList[2]));
         paraScoresToClient.paras = paras;
+        let targetList = ["sky","human","ground", "out", "total"];
+        for (let i = 0; i < paras.length; i++) {
+            let result = await getparaScoresToClient(paras[i]);
+            tempTargetLevel = targetList[i]+"ScoreLevel";
+            tempTargetResult = targetList[i]+"ScoreResult";
+            paraScoresToClient[tempTargetLevel]=result.scoreLevel;
+            paraScoresToClient[tempTargetLevel]=result.scoreResult; 
+        }
         paraScoresToClient.para5EList = getPara5E(paras, chinese5E);
     }
     let color5eList = []
@@ -461,8 +504,6 @@ app.get("/getresult/:targetName", async function (req, res) {
 	let colorSancai5E;
     let name5EsToClient;
     let paraScoresToClient;
-	let sancai = require("./project1/pages/data/Sancai.json");
-	let paraScroes = require("./project1/pages/data/EightyOne.json");
 	let targetName =req.params.targetName;
 	let nameInfo = await getStrockesList(targetName);
 	if (nameInfo == "error" || nameInfo.strockesList.length != targetName.length){
@@ -475,8 +516,8 @@ app.get("/getresult/:targetName", async function (req, res) {
 		let groundPara = nameInfo.strockesList[2] + nameInfo.strockesList[3];
 		let sancai5E = chinese5E[skyPara % 10] + chinese5E[humanPara % 10] + chinese5E[groundPara % 10]
 		 colorSancai5E = addColor(sancai5E); //回傳給前端$("#name5Es").html(colorSancai5E);
-         name5EsToClient = get5EResult(sancai5E, sancai); //回傳給前端$("#name5EsLevel").text(sancai[sancaiKey[i]].text);$("#name5EsResult").text(sancai[sancaiKey[i]].content);
-		 paraScoresToClient = addParaScores(paraScroes, nameInfo.strockesList, chinese5E);//回傳給前端
+         name5EsToClient = await get5EResult(sancai5E); //回傳給前端$("#name5EsLevel").text(sancai[sancaiKey[i]].text);$("#name5EsResult").text(sancai[sancaiKey[i]].content);
+		 paraScoresToClient = await addParaScores(nameInfo.strockesList, chinese5E);//回傳給前端
 	} else {
 		if (nameInfo.strockesList.length == 2) {
 			nameInfo.strockesList.push("0");
@@ -486,8 +527,8 @@ app.get("/getresult/:targetName", async function (req, res) {
 		let groundPara = nameInfo.strockesList[1] + nameInfo.strockesList[2];
 		let sancai5E = chinese5E[skyPara % 10] + chinese5E[humanPara % 10] + chinese5E[groundPara % 10]
          colorSancai5E = addColor(sancai5E); //回傳給前端$("#name5Es").html(colorSancai5E);
-		 name5EsToClient = get5EResult(sancai5E, sancai); //回傳給前端$("#name5EsLevel").text(sancai[sancaiKey[i]].text);$("#name5EsResult").text(sancai[sancaiKey[i]].content);
-		 paraScoresToClient = addParaScores(paraScroes, nameInfo.strockesList, chinese5E);//回傳給前端
+		 name5EsToClient = await get5EResult(sancai5E); //回傳給前端$("#name5EsLevel").text(sancai[sancaiKey[i]].text);$("#name5EsResult").text(sancai[sancaiKey[i]].content);
+		 paraScoresToClient = await addParaScores(nameInfo.strockesList, chinese5E);//回傳給前端
 	}
     let result = {
         strockesList: nameInfo.strockesList,
