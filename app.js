@@ -204,7 +204,7 @@ async function addParaScores(strockesList, chinese5E) {
             tempTargetLevel = targetList[i]+"ScoreLevel";
             tempTargetResult = targetList[i]+"ScoreResult";
             paraScoresToClient[tempTargetLevel]=result.scoreLevel;
-            paraScoresToClient[tempTargetLevel]=result.scoreResult; 
+            paraScoresToClient[tempTargetResult]=result.scoreResult; 
         }
         paraScoresToClient.para5EList = getPara5E(paras, chinese5E);
     } else {
@@ -222,7 +222,7 @@ async function addParaScores(strockesList, chinese5E) {
             tempTargetLevel = targetList[i]+"ScoreLevel";
             tempTargetResult = targetList[i]+"ScoreResult";
             paraScoresToClient[tempTargetLevel]=result.scoreLevel;
-            paraScoresToClient[tempTargetLevel]=result.scoreResult; 
+            paraScoresToClient[tempTargetResult]=result.scoreResult; 
         }
         paraScoresToClient.para5EList = getPara5E(paras, chinese5E);
     }
@@ -234,40 +234,63 @@ async function addParaScores(strockesList, chinese5E) {
     paraScoresToClient.color5eList = color5eList;
     return paraScoresToClient;
 }
-function getCombinations(strockes,sancai,paraScroes,chinese5E){
+async function getCombinations(strockes,chinese5E){
     let skyPara = strockes + 1;
     let sky5E = chinese5E[skyPara % 10];
-    let combinationsinfo = []
-    let sancaiKey = Object.keys(sancai);
-    for (let i = 0; i < sancaiKey.length; i++) {
-        if (sky5E == sancaiKey[i][0] && sancai[sancaiKey[i]].value >= 8) {
-            for (let humanPara = strockes + 1; humanPara <= strockes + 26; humanPara++) {
-                let human5E = chinese5E[humanPara % 10];
-                if (human5E == sancaiKey[i][1]) {
-                    let midstrockes = humanPara - strockes;
-                    for (let groundPara = midstrockes + 1; groundPara <= midstrockes + 26; groundPara++) {
-                        let ground5E = chinese5E[groundPara % 10];
-                        if (ground5E == sancaiKey[i][2]) {
-                            let endstrockes = groundPara - midstrockes;
-                            let nameScore = getNameScore(strockes, midstrockes, endstrockes,paraScroes);
-                            if (nameScore >= 80) {
-                                combinationsinfo.push({
-                                    "sancaiKey": sancaiKey[i],
-                                    "value": nameScore,
-                                    "top": strockes,
-                                    "middle": midstrockes,
-                                    "bottom": endstrockes
-                                })
-                                
+    
+    async function getcombinationsinfo(sky5E,strockes) {
+        let combinationsinfo = [];
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select fiveelementcombination from sancaidata where (fiveelementcombination like ? and value >= 8)",
+                [sky5E+"%"],
+                async function (err,rows){
+                    if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    };
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    
+                    for (let z = 0; z < rows.length; z++) {
+                        let temp5ecombe =rows[z].fiveelementcombination;
+                        for (let humanPara = strockes + 1; humanPara <= strockes + 26; humanPara++) {
+                            let human5E = chinese5E[humanPara % 10];
+                            if (human5E == temp5ecombe[1]) {
+                                let midstrockes = humanPara - strockes;
+                                for (let groundPara = midstrockes + 1; groundPara <= midstrockes + 26; groundPara++) {
+                                    let ground5E = chinese5E[groundPara % 10];
+                                    if (ground5E == temp5ecombe[2]) {
+                                        let endstrockes = groundPara - midstrockes;
+                                        let nameScore = await getNameScore(strockes, midstrockes, endstrockes);                                     
+                                        if (nameScore >= 80) {
+                                            combinationsinfo.push({
+                                                "sancaiKey": temp5ecombe,
+                                                "value": nameScore,
+                                                "top": strockes,
+                                                "middle": midstrockes,
+                                                "bottom": endstrockes
+                                            })
+                                            
+                                        }
+                                    }
+                                }
                             }
+            
                         }
+                        
                     }
+                    good(combinationsinfo)
                 }
-
-            }
-
-        }
+            )
+            
+        })
+        let result = await promise1.catch(function(err){})
+        return result;
     }
+    let combinationsinfo = await getcombinationsinfo(sky5E,strockes);
     combinationsinfo.sort(function (a, b) {
         return b.value - a.value;
     });
@@ -278,21 +301,332 @@ function getCombinations(strockes,sancai,paraScroes,chinese5E){
     }
     return combinationsinfoList;
 }
-function getNameScore(strockes, midstrockes, endstrockes, paraScroes) {
-    if (paraScroes[strockes + 1 - 1] == undefined) {
-        return;
-    }
-    let nameScore = paraScroes[strockes + 1 - 1].value;
-    nameScore += paraScroes[strockes + midstrockes - 1].value;
-    nameScore += paraScroes[midstrockes + endstrockes - 1].value;
-    nameScore += paraScroes[endstrockes + 1 - 1].value;
-    nameScore += paraScroes[strockes + midstrockes + endstrockes - 1].value;
-    nameScore *= 2;
+async function getNameScore(strockes, midstrockes, endstrockes) {
+    let promise2= new Promise(function (good, bad){
+        let nameScore =0;
+        connection.query("select value from nameparameterscore where draw = ?",[strockes + 1],function (err,rows){
+            nameScore += rows[0].value;
+            connection.query("select value from nameparameterscore where draw = ?",[strockes + midstrockes],function (err,rows){
+                nameScore += rows[0].value;
+                connection.query("select value from nameparameterscore where draw = ?",[midstrockes + endstrockes],function (err,rows){
+                    nameScore += rows[0].value;
+                    connection.query("select value from nameparameterscore where draw = ?",[endstrockes + 1],function (err,rows){
+                        nameScore += rows[0].value;
+                        connection.query("select value from nameparameterscore where draw = ?",[strockes + midstrockes + endstrockes],function (err,rows){
+                            nameScore += rows[0].value;
+                            nameScore *= 2;
+                           
+                            good(nameScore);
+                        })
+
+                    })
+                })
+                
+            })
+        })
+    })
+    let nameScore = await promise2.catch(function(err){})
     return nameScore;
+    // if (paraScroes[strockes + 1 - 1] == undefined) {
+    //     return;
+    // }
+    // nameScore = paraScroes[strockes + 1 - 1].value;
+    // nameScore += paraScroes[strockes + midstrockes - 1].value;
+    // nameScore += paraScroes[midstrockes + endstrockes - 1].value;
+    // nameScore += paraScroes[endstrockes + 1 - 1].value;
+    // nameScore += paraScroes[strockes + midstrockes + endstrockes - 1].value;
+    // nameScore *= 2;
+    // return nameScore;
 }
-function getWord(zodiacWords, strockesList, chineseCharacters) {
-    let betterKey = Object.keys(zodiacWords.better);
-    let betterMidWordList = []; //回傳!
+async function getWord(zodiacId, strockesList) {
+    async function getBetterMidWords(zodiacId,strockesList) {
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 1 ",
+                [zodiacId,strockesList[1]],
+                function (err,rows) {
+                    if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    };
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let betterMidWordList = rows[0].words;
+                    good(betterMidWordList);
+                }
+            )
+        })
+        let result = await promise1.catch(function(err){});
+        if (result.length> 0){
+            result=result.split("")
+        }
+        return result
+    }
+    async function getBetterBotWords(zodiacId,strockesList) {
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 1 ",
+                [zodiacId,strockesList[2]],
+                function (err,rows) {
+                    if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    };
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let betterBotWordList = rows[0].words;
+                    good(betterBotWordList);
+                }
+            )
+        })
+        let result = await promise1.catch(function(err){});
+        if (result.length> 0){
+            result=result.split("")
+        }
+        return result
+    }
+    async function getbadMidWordList(zodiacId,strockesList) {
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 0 ",
+                [zodiacId,strockesList[1]],
+                function (err,rows) {
+                    if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    };
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let badMidWordList = rows[0].words;
+                    good(badMidWordList);
+                }
+            )
+        })
+        let result = await promise1.catch(function(err){});
+        if (result.length> 0){
+            result=result.split("")
+        }
+        return result
+    }
+    async function getbadBotWordList(zodiacId,strockesList) {
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 0 ",
+                [zodiacId,strockesList[2]],
+                function (err,rows) {
+                    if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    };
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let badBotWordList = rows[0].words;
+                    good(badBotWordList);
+                }
+            )
+        })
+        let result = await promise1.catch(function(err){});
+        if (result.length> 0){
+            result=result.split("")
+        }
+        return result
+    }
+    async function getnormalMidWordList(strockesList) {
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select words from chinesewords where fiveelement = ? and draw = ?",
+                ["金",strockesList[1]],
+                function (err,rows) {
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let goldMid = [];
+                    if(rows.length > 0){
+                        goldMid = rows[0].words;
+                        goldMid = goldMid.split("");
+                    }
+                    connection.query(
+                        "select words from chinesewords where fiveelement = ? and draw = ?",
+                        ["木",strockesList[1]],
+                        function (err,rows) {
+                            if (err){
+                                bad(err);
+                                return;
+                            };
+                            let treeMid=[];
+                            if (rows.length) {
+                            treeMid = rows[0].words;
+                            treeMid = treeMid.split("");
+                            }
+                            connection.query(
+                                "select words from chinesewords where fiveelement = ? and draw = ?",
+                                ["水",strockesList[1]],
+                                function (err,rows) {
+                                    if (err){
+                                        bad(err);
+                                        return;
+                                    };
+                                    let waterMid=[];
+                            if (rows.length) {
+                            waterMid = rows[0].words;
+                            waterMid = waterMid.split("");
+                            }
+                                    connection.query(
+                                        "select words from chinesewords where fiveelement = ? and draw = ?",
+                                        ["火",strockesList[1]],
+                                        function (err,rows) {
+                                            if (err){
+                                                bad(err);
+                                                return;
+                                            };
+                                            let fireMid=[];
+                            if (rows.length) {
+                            fireMid = rows[0].words;
+                            fireMid = fireMid.split("");
+                            }
+                                            connection.query(
+                                                "select words from chinesewords where fiveelement = ? and draw = ?",
+                                                ["土",strockesList[1]],
+                                                function (err,rows) {
+                                                    if (err){
+                                                        bad(err);
+                                                        return;
+                                                    };
+                                                    let groundMid=[];
+                            if (rows.length) {
+                            groundMid = rows[0].words;
+                            groundMid = groundMid.split("");
+                            }
+                                                    let normalMidWordList={//回傳
+                                                        goldMid: goldMid,
+                                                        treeMid: treeMid,
+                                                        waterMid: waterMid,
+                                                        fireMid: fireMid,
+                                                        groundMid: groundMid
+                                                    };
+                                                    good(normalMidWordList);
+                                                }
+                                            )
+                                        }
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
+            )
+        })
+        let result = await promise1.catch(function(err){});
+        return result
+    }
+    async function getnormalBotWordList(strockesList) {
+        let promise1 = new Promise(function (good,bad) {
+            connection.query(
+                "select words from chinesewords where fiveelement = ? and draw = ?",
+                ["金",strockesList[2]],
+                function (err,rows) {
+                    if (err){
+                        bad(err);
+                        return;
+                    };
+                    let goldBot=[];
+                    if(rows.length>0){
+                       goldBot = rows[0].words;
+                    goldBot =goldBot.split("");
+                    }                    
+                    connection.query(
+                        "select words from chinesewords where fiveelement = ? and draw = ?",
+                        ["木",strockesList[2]],
+                        function (err,rows) {
+                            if (err){
+                                bad(err);
+                                return;
+                            };
+                            let treeBot=[];
+                    if(rows.length>0){
+                       treeBot = rows[0].words;
+                    treeBot =treeBot.split("");
+                    }
+                            connection.query(
+                                "select words from chinesewords where fiveelement = ? and draw = ?",
+                                ["水",strockesList[2]],
+                                function (err,rows) {
+                                    if (err){
+                                        bad(err);
+                                        return;
+                                    };
+                                    let waterBot=[];
+                    if(rows.length>0){
+                       waterBot = rows[0].words;
+                    waterBot =waterBot.split("");
+                    }
+                                    connection.query(
+                                        "select words from chinesewords where fiveelement = ? and draw = ?",
+                                        ["火",strockesList[2]],
+                                        function (err,rows) {
+                                            if (err){
+                                                bad(err);
+                                                return;
+                                            };
+                                            let fireBot=[];
+                    if(rows.length>0){
+                       fireBot = rows[0].words;
+                    fireBot =fireBot.split("");
+                    }
+                                            connection.query(
+                                                "select words from chinesewords where fiveelement = ? and draw = ?",
+                                                ["土",strockesList[2]],
+                                                function (err,rows) {
+                                                    if (err){
+                                                        bad(err);
+                                                        return;
+                                                    };
+                                                    let groundBot=[];
+                    if(rows.length>0){
+                       groundBot = rows[0].words;
+                    groundBot =groundBot.split("");
+                    }
+                                                    let normalBotWordList={//回傳
+                                                        goldBot: goldBot,
+                                                        treeBot: treeBot,
+                                                        waterBot: waterBot,
+                                                        fireBot: fireBot,
+                                                        groundBot: groundBot
+                                                    };
+                                                    good(normalBotWordList);
+                                                }
+                                            )
+                                        }
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
+            )
+        })
+        let result = await promise1.catch(function(err){});
+        return result
+    }
+
+    //回傳!
+    let betterMidWordList = await getBetterMidWords(zodiacId, strockesList);
+    let betterBotWordList = await getBetterBotWords(zodiacId, strockesList);
+    let badMidWordList = await getbadMidWordList(zodiacId, strockesList);
+    let badBotWordList = await getbadBotWordList(zodiacId, strockesList);
+    let normalMidWordList = await getnormalMidWordList(strockesList);
+    let normalBotWordList = await getnormalBotWordList(strockesList);
+
+
     let betterMidRepeats={ //回傳重複字的INDEX清單!
             gold: betterMGold=[],
             tree: betterMTree=[],
@@ -300,7 +634,6 @@ function getWord(zodiacWords, strockesList, chineseCharacters) {
             fire: betterMFire=[],
             ground: betterMGround=[]
         };
-    let betterBotWordList = []; //回傳!
     let betterBotRepeats={ //回傳重複字的INDEX清單!
         gold: betterBGold=[],
         tree: betterBTree=[],
@@ -308,22 +641,6 @@ function getWord(zodiacWords, strockesList, chineseCharacters) {
         fire: betterBFire=[],
         ground: betterBGround=[]
     };
-    for (let i = 0; i < betterKey.length; i++) {
-        if ("_" + strockesList[1] == betterKey[i]) {
-            x = "_" + strockesList[1]
-            for (let i = 0; i < zodiacWords.better[x].length; i++) {
-                betterMidWordList.push(zodiacWords.better[x][i]);
-            }
-        }
-        if ("_" + strockesList[2] == betterKey[i]) {
-            x = "_" + strockesList[2]
-            for (let i = 0; i < zodiacWords.better[x].length; i++) {
-                betterBotWordList.push(zodiacWords.better[x][i]);
-            }
-        }
-    };
-    let badKey = Object.keys(zodiacWords.worse);
-    let badMidWordList = []; //回傳
     let badMidRepeats={ //回傳重複字的INDEX清單
         gold: badMGold=[],
         tree: badMTree=[],
@@ -331,7 +648,6 @@ function getWord(zodiacWords, strockesList, chineseCharacters) {
         fire: badMFire=[],
         ground: badMGround=[]
     };
-    let badBotWordList = []; //回傳
     let badBotRepeats={ //回傳重複字的INDEX清單
         gold: badBGold=[],
         tree: badBTree=[],
@@ -339,149 +655,86 @@ function getWord(zodiacWords, strockesList, chineseCharacters) {
         fire: badBFire=[],
         ground: badBGround=[]
     };
-    for (let i = 0; i < badKey.length; i++) {
-        if ("_" + strockesList[1] == badKey[i]) {
-            x = "_" + strockesList[1]
-            for (let i = 0; i < zodiacWords.worse[x].length; i++) {
-                badMidWordList.push(zodiacWords.worse[x][i]);
-            }
-        } if ("_" + strockesList[2] == badKey[i]) {
-            x = "_" + strockesList[2]
-            for (let i = 0; i < zodiacWords.worse[x].length; i++) {
-                badBotWordList.push(zodiacWords.worse[x][i]);
-            }
-        }
-    };
-    let normalMidWordList={//回傳
-        goldMid: goldMid =[],
-        treeMid: treeMid =[],
-        waterMid: waterMid =[],
-        fireMid: fireMid =[],
-        groundMid: groundMid =[]
-    };
-    let normalBotWordList={//回傳
-        goldBot: goldBot =[],
-        treeBot: treeBot =[],
-        waterBot: waterBot =[],
-        fireBot: fireBot =[],
-        groundBot: groundBot =[]
-    };
-    for (let i = 0; i < chineseCharacters.length; i++) {
-        if (strockesList[1] == chineseCharacters[i].draw) {
-            let charList = chineseCharacters[i].chars.split("");
-            switch (chineseCharacters[i].fiveEle) {
-                case "金":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterMidWordList.indexOf(charList[z]) != -1 || badMidWordList.indexOf(charList[z]) != -1) {
-                            betterMidRepeats.gold.push(betterMidWordList.indexOf(charList[z]));
-                            badMidRepeats.gold.push(badMidWordList.indexOf(charList[z]));
-                            continue;
+    //重複字去除
+    for (let z = normalMidWordList.goldMid.length -1; z >= 0; z--) {
+                        if (betterMidWordList.indexOf(normalMidWordList.goldMid[z]) != -1 || badMidWordList.indexOf(normalMidWordList.goldMid[z]) != -1) {
+                            betterMidRepeats.gold.push(betterMidWordList.indexOf(normalMidWordList.goldMid[z]));
+                            badMidRepeats.gold.push(badMidWordList.indexOf(normalMidWordList.goldMid[z]));
+                            normalMidWordList.goldMid.splice(z,1);
                         }
-                        normalMidWordList.goldMid.push(charList[z]);
+    }                
+                    for (let z = normalMidWordList.treeMid.length-1; z >= 0; z--) {
+                        if (betterMidWordList.indexOf(normalMidWordList.treeMid[z]) != -1 || badMidWordList.indexOf(normalMidWordList.treeMid[z]) != -1) {
+                            betterMidRepeats.tree.push(betterMidWordList.indexOf(normalMidWordList.treeMid[z]));
+                            badMidRepeats.tree.push(badMidWordList.indexOf(normalMidWordList.treeMid[z]));
+                            normalMidWordList.treeMid.splice(z,1);
+                        }
+                     }
+                   
+                    for (let z = normalMidWordList.waterMid.length-1; z >= 0; z--) {
+                        if (betterMidWordList.indexOf(normalMidWordList.waterMid[z]) != -1 || badMidWordList.indexOf(normalMidWordList.waterMid[z]) != -1) {
+                            betterMidRepeats.water.push(betterMidWordList.indexOf(normalMidWordList.waterMid[z]));
+                            badMidRepeats.water.push(badMidWordList.indexOf(normalMidWordList.waterMid[z]));
+                            normalMidWordList.waterMid.splice(z,1);
+                        }
                     }
-                    break;
-                case "木":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterMidWordList.indexOf(charList[z]) != -1 || badMidWordList.indexOf(charList[z]) != -1) {
-                            betterMidRepeats.tree.push(betterMidWordList.indexOf(charList[z]));
-                            badMidRepeats.tree.push(badMidWordList.indexOf(charList[z]));
-                            continue;
+                    
+                    for (let z = normalMidWordList.fireMid.length-1; z >= 0; z--) {
+                        if (betterMidWordList.indexOf(normalMidWordList.fireMid[z]) != -1 || badMidWordList.indexOf(normalMidWordList.fireMid[z]) != -1) {
+                            betterMidRepeats.fire.push(betterMidWordList.indexOf(normalMidWordList.fireMid[z]));
+                            badMidRepeats.fire.push(badMidWordList.indexOf(normalMidWordList.fireMid[z]));
+                            normalMidWordList.fireMid.splice(z,1);
                         }
-                        normalMidWordList.treeMid.push(charList[z]);                    }
-                    break;
-                case "水":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterMidWordList.indexOf(charList[z]) != -1 || badMidWordList.indexOf(charList[z]) != -1) {
-                            betterMidRepeats.water.push(betterMidWordList.indexOf(charList[z]));
-                            badMidRepeats.water.push(badMidWordList.indexOf(charList[z]));
-                            continue;
                         }
-                        normalMidWordList.waterMid.push(charList[z]);                     }
-                    break;
-                case "火":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterMidWordList.indexOf(charList[z]) != -1 || badMidWordList.indexOf(charList[z]) != -1) {
-                            betterMidRepeats.fire.push(betterMidWordList.indexOf(charList[z]));
-                            badMidRepeats.fire.push(badMidWordList.indexOf(charList[z]));
-                            continue;
+                    
+                    for (let z = normalMidWordList.groundMid.length-1; z >= 0; z--) {
+                        if (betterMidWordList.indexOf(normalMidWordList.groundMid[z]) != -1 || badMidWordList.indexOf(normalMidWordList.groundMid[z]) != -1) {
+                            betterMidRepeats.ground.push(betterMidWordList.indexOf(normalMidWordList.groundMid[z]));
+                            badMidRepeats.ground.push(badMidWordList.indexOf(normalMidWordList.groundMid[z]));
+                            normalMidWordList.groundMid.splice(z,1);
                         }
-                        normalMidWordList.fireMid.push(charList[z]);                     }
-                    break;
-                case "土":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterMidWordList.indexOf(charList[z]) != -1 || badMidWordList.indexOf(charList[z]) != -1) {
-                            betterMidRepeats.ground.push(betterMidWordList.indexOf(charList[z]));
-                            badMidRepeats.ground.push(badMidWordList.indexOf(charList[z]));
-                            continue;
-                        }
-                        normalMidWordList.groundMid.push(charList[z]);                     }
-                    break;
-                default:
-                    console.log("error")
-                    break;
-
-            }
-        };
-        if (strockesList[2] == chineseCharacters[i].draw) {
-            let charList = chineseCharacters[i].chars.split("");
-            switch (chineseCharacters[i].fiveEle) {
-                case "金":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterBotWordList.indexOf(charList[z]) != -1 || badBotWordList.indexOf(charList[z]) != -1) {
-                            betterBotRepeats.gold.push(betterBotWordList.indexOf(charList[z]));
-                            badBotRepeats.gold.push(badBotWordList.indexOf(charList[z]));
-                            continue;
-                        }
-                        normalBotWordList.goldBot.push(charList[z]);
+                   }
+                    
+                //    名字二
+                   for (let z = normalBotWordList.goldBot.length -1; z >= 0; z--) {
+                    if (betterBotWordList.indexOf(normalBotWordList.goldBot[z]) != -1 || badBotWordList.indexOf(normalBotWordList.goldBot[z]) != -1) {
+                        betterBotRepeats.gold.push(betterBotWordList.indexOf(normalBotWordList.goldBot[z]));
+                        badBotRepeats.gold.push(badBotWordList.indexOf(normalBotWordList.goldBot[z]));
+                        normalBotWordList.goldBot.splice(z,1);
                     }
-                    break;
-                case "木":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterBotWordList.indexOf(charList[z]) != -1 || badBotWordList.indexOf(charList[z]) != -1) {
-                            betterBotRepeats.tree.push(betterBotWordList.indexOf(charList[z]));
-                            badBotRepeats.tree.push(badBotWordList.indexOf(charList[z]));
-                            continue;
-                        }
-                        normalBotWordList.treeBot.push(charList[z]);
+}                
+                for (let z = normalBotWordList.treeBot.length-1; z >= 0; z--) {
+                    if (betterBotWordList.indexOf(normalBotWordList.treeBot[z]) != -1 || badBotWordList.indexOf(normalBotWordList.treeBot[z]) != -1) {
+                        betterBotRepeats.tree.push(betterBotWordList.indexOf(normalBotWordList.treeBot[z]));
+                        badBotRepeats.tree.push(badBotWordList.indexOf(normalBotWordList.treeBot[z]));
+                        normalBotWordList.treeBot.splice(z,1);
                     }
-                    break;
-                case "水":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterBotWordList.indexOf(charList[z]) != -1 || badBotWordList.indexOf(charList[z]) != -1) {
-                            betterBotRepeats.water.push(betterBotWordList.indexOf(charList[z]));
-                            badBotRepeats.water.push(badBotWordList.indexOf(charList[z]));
-                            continue;
-                        }
-                        normalBotWordList.waterBot.push(charList[z]);
+                 }
+               
+                for (let z = normalBotWordList.waterBot.length-1; z >= 0; z--) {
+                    if (betterBotWordList.indexOf(normalBotWordList.waterBot[z]) != -1 || badBotWordList.indexOf(normalBotWordList.waterBot[z]) != -1) {
+                        betterBotRepeats.water.push(betterBotWordList.indexOf(normalBotWordList.waterBot[z]));
+                        badBotRepeats.water.push(badBotWordList.indexOf(normalBotWordList.waterBot[z]));
+                        normalBotWordList.waterBot.splice(z,1);
                     }
-                    break;
-                case "火":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterBotWordList.indexOf(charList[z]) != -1 || badBotWordList.indexOf(charList[z]) != -1) {
-                            betterBotRepeats.fire.push(betterBotWordList.indexOf(charList[z]));
-                            badBotRepeats.fire.push(badBotWordList.indexOf(charList[z]));
-                            continue;
-                        }
-                        normalBotWordList.fireBot.push(charList[z]);
+                }
+                
+                for (let z = normalBotWordList.fireBot.length-1; z >= 0; z--) {
+                    if (betterBotWordList.indexOf(normalBotWordList.fireBot[z]) != -1 || badBotWordList.indexOf(normalBotWordList.fireBot[z]) != -1) {
+                        betterBotRepeats.fire.push(betterBotWordList.indexOf(normalBotWordList.fireBot[z]));
+                        badBotRepeats.fire.push(badBotWordList.indexOf(normalBotWordList.fireBot[z]));
+                        normalBotWordList.fireBot.splice(z,1);
                     }
-                    break;
-                case "土":
-                    for (let z = 0; z < charList.length; z++) {
-                        if (betterBotWordList.indexOf(charList[z]) != -1 || badBotWordList.indexOf(charList[z]) != -1) {
-                            betterBotRepeats.ground.push(betterBotWordList.indexOf(charList[z]));
-                            badBotRepeats.ground.push(badBotWordList.indexOf(charList[z]));
-                            continue;
-                        }
-                        normalBotWordList.groundBot.push(charList[z]);
                     }
-                    break;
-                default:
-                    console.log("error")
-                    break;
-
-            }
-        }
-    };
+                
+                for (let z = normalBotWordList.groundBot.length-1; z >= 0; z--) {
+                    if (betterBotWordList.indexOf(normalBotWordList.groundBot[z]) != -1 || badBotWordList.indexOf(normalBotWordList.groundBot[z]) != -1) {
+                        betterBotRepeats.ground.push(betterBotWordList.indexOf(normalBotWordList.groundBot[z]));
+                        badBotRepeats.ground.push(badBotWordList.indexOf(normalBotWordList.groundBot[z]));
+                        normalBotWordList.groundBot.splice(z,1);
+                    }
+               }
+    
     let wordList = {
         betterMidWordList: betterMidWordList,
         betterMidRepeats: betterMidRepeats,
@@ -541,16 +794,12 @@ app.get("/getresult/:targetName", async function (req, res) {
 
 // 命名改名回應
 //取得筆畫組合
-app.get("/getcombinations/:lastName",function (req, res) {
+app.get("/getcombinations/:lastName", async function (req, res) {
     let chinese5E = ["水", "木", "木", "火", "火", "土", "土", "金", "金", "水"];
-    let data = fs.readFileSync("./project1/pages/data/ChineseCharacters.json");
-	let chineseCharacters = JSON.parse(data);
-    let sancai = require("./project1/pages/data/Sancai.json");
-	let paraScroes = require("./project1/pages/data/EightyOne.json");
     let lastName =req.params.lastName;
-    let nameInfo = getStrockesList(lastName,chineseCharacters);
+    let nameInfo = await getStrockesList(lastName);
     let strokes = nameInfo.strockesList[0];
-    let combinationsinfoList = getCombinations(strokes,sancai,paraScroes,chinese5E);
+    let combinationsinfoList = await getCombinations(strokes,chinese5E);
     
     let result = {
         nameInfo: nameInfo,
@@ -560,35 +809,28 @@ app.get("/getcombinations/:lastName",function (req, res) {
     }
     res.send(result);
 });
-app.get("/getwords/:infos",function (req, res) {
+app.get("/getwords/:infos",async function (req, res) {
     let chinese5E = ["水", "木", "木", "火", "火", "土", "土", "金", "金", "水"];
     let infos =req.params.infos;
     infos = infos.split(";");
     let zodiacId = infos[0];
     let combinationvalue =infos[1]
-    let data = fs.readFileSync("./project1/pages/data/ChineseCharacters.json");
-	let chineseCharacters = JSON.parse(data);
-    let zodiacWords = require(`./project1/pages/data/${zodiacId}.json`);
-    let paraScroes = require("./project1/pages/data/EightyOne.json");
-    let sancai = require("./project1/pages/data/Sancai.json");
-
     combination = combinationvalue.split(" ");
         // 取出五行組合
     let fiveElement = combination[0].slice(0, 3);
-    let name5EsToClient = get5EResult(fiveElement, sancai);
+    let name5EsToClient = await get5EResult(fiveElement);
     let temp = combination[1];
     let strockesList = temp.split(",");
-    let paraScoresToClient = addParaScores(paraScroes,strockesList,chinese5E);
+    let paraScoresToClient = await addParaScores(strockesList,chinese5E);
     let top5EColor = addColor(infos[2]);
     let colorFiveElement = addColor(fiveElement);
-    let wordList = getWord(zodiacWords,strockesList, chineseCharacters);
+    let wordList = await getWord(zodiacId,strockesList);
     
     let result = {
         colorFiveElement: colorFiveElement,
         name5EsToClient: name5EsToClient,
         top5EColor: top5EColor,
         strockesList:strockesList,
-        zodiacWords: zodiacWords,
         combinationvalue: combinationvalue,
         paraScoresToClient: paraScoresToClient,
         wordList: wordList
@@ -598,10 +840,10 @@ app.get("/getwords/:infos",function (req, res) {
 
 // 網頁網址
 app.get("/naming", function (req,res) {
-    res.sendFile("C:/Users/Tang/Desktop/Ispan_class/小專/project1_plus/project1/pages/naming.html");
+    res.sendFile("C:/Users/Tang/Desktop/Ispan_class/小專/project1_pro/project1/pages/naming.html");
 });
 app.get("/namescore", function (req,res) {
-    res.sendFile("C:/Users/Tang/Desktop/Ispan_class/小專/project1_plus/project1/pages/namescore.html");
+    res.sendFile("C:/Users/Tang/Desktop/Ispan_class/小專/project1_pro/project1/pages/namescore.html");
 });
 
 
