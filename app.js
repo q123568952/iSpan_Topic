@@ -22,27 +22,53 @@ app.listen(3000);
 console.log("Web伺服器就緒，開始接受用戶端連線.");
 console.log("「Ctrl + C」可結束伺服器程式.");
 
-function getStrockesList(targetName, chineseCharacters) {
+ async function getStrockesList(targetName) {
     let flag = true;
     let strockesList = [];
     let name5E = [];
-    for (let i = 0; i < targetName.length; i++) {
-		flag =true;
-        for (let k = 0; k < chineseCharacters.length; k++) {
-            let temp = chineseCharacters[k].chars.split("");
-            // temp1變成chars array
-            for (let j = 0; j < temp.length; j++) {
-                if (temp[j] == targetName[i]) {
-                    let tempStrockes = chineseCharacters[k].draw;
-                    strockesList.push(tempStrockes);
-                    let tempName5E = chineseCharacters[i].fiveEle;
-                    name5E.push(tempName5E);
-                    flag = false;
-                    break
+    async function getDraw(name){
+        let promise1 = new Promise(function (good,bad){
+            connection.query(
+                "select draw, fiveelement from chinesewords where words like ?",
+                ["%"+name+"%"],
+                function(err,rows){
+                   if (rows.length<=0){
+                        bad("nodata");
+                        return;
+                    }
+                    if (err){
+                        bad(err);
+                        return;
+                    }
+                    draw = rows[0].draw;
+                    tempName5E = rows[0].fiveelement;
+                    result={
+                        draw: draw,
+                        tempName5E:tempName5E
+                    }
+                    good(result);
                 }
-            }
-        }
+                )
+            })
+            result = await promise1.catch(
+                function (err) {
+                }
+            );
+            return result;
     }
+    
+     for  (let i = 0; i < targetName.length; i++) {
+		flag =false;
+        result = await getDraw(targetName[i])
+        if (result == undefined) {
+            flag =true;
+            continue;
+        }
+        strockesList.push(result.draw);
+        name5E.push(result.tempName5E);
+         
+    }
+    
     if (flag) {
         return "error";
     };
@@ -430,17 +456,15 @@ function getWord(zodiacWords, strockesList, chineseCharacters) {
 
 // 回應程式區
 // 姓名分析回應
-app.get("/getresult/:targetName", function (req, res) {
+app.get("/getresult/:targetName", async function (req, res) {
 	let chinese5E = ["水", "木", "木", "火", "火", "土", "土", "金", "金", "水"];
 	let colorSancai5E;
     let name5EsToClient;
     let paraScoresToClient;
-    let data = fs.readFileSync("./project1/pages/data/ChineseCharacters.json");
-	let chineseCharacters = JSON.parse(data);
 	let sancai = require("./project1/pages/data/Sancai.json");
 	let paraScroes = require("./project1/pages/data/EightyOne.json");
 	let targetName =req.params.targetName;
-	let nameInfo = getStrockesList(targetName,chineseCharacters);
+	let nameInfo = await getStrockesList(targetName);
 	if (nameInfo == "error" || nameInfo.strockesList.length != targetName.length){
             res.send("error");
             return;
