@@ -25,6 +25,8 @@ $(document).ready(async function () {
 
     $("button[class^=zodiac]").on("click", async function () {
         let zodiacId = $(this).prop("id");
+        $("button[class^=zodiac]").removeClass("btn-outline-dark");
+        $(this).addClass("btn-outline-dark");
         if (lastName.length <=0||lastName.length>=2|| lastName == " ") {
             $.toast("還調皮啊!!!")
             return;

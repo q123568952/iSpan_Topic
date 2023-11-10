@@ -1,0 +1,12 @@
+SELECT draw, words FROM zodiacword WHERE words like "%台%";
+SELECT draw, words FROM zodiacword WHERE draw = (select draw from chinesewords where words LIKE "%台%");
+UPDATE zodiacword set words = REPLACE(words, "台","") WHERE words like "%台%"; 
+UPDATE zodiacword set words = concat(words, "台") WHERE draw = (select draw from chinesewords where words LIKE "%台%");
+SELECT draw, words FROM zodiacword WHERE words like "%台%";
+SELECT draw, words FROM zodiacword WHERE draw = (select draw from chinesewords where words LIKE "%台%");
+
+
+
+
+
+SELECT * FROM `chinesewords` WHERE words like "%澳%"
