@@ -21,7 +21,7 @@ const connection = mysql.createConnection({
     connection.connect();
 
 
-app.listen(3000);
+app.listen(8080);
 console.log("Web伺服器就緒，開始接受用戶端連線.");
 console.log("「Ctrl + C」可結束伺服器程式.");
 
@@ -844,10 +844,10 @@ app.get("/getwords/:infos",async function (req, res) {
 
 // 網頁網址
 app.get("/naming", function (req,res) {
-    res.sendFile("C:/Users/Tang/Desktop/Ispan_class/小專/project1_pro/project1/pages/naming.html");
+    res.sendFile("./project1/pages/naming.html",{root:__dirname});
 });
 app.get("/namescore", function (req,res) {
-    res.sendFile("C:/Users/Tang/Desktop/Ispan_class/小專/project1_pro/project1/pages/namescore.html");
+    res.sendFile("./project1/pages/namescore.html",{root:__dirname});
 });
 
 

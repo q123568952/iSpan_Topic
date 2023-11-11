@@ -350,14 +350,32 @@
 
         </footer>
 
-        <div style="position: fixed; right: 10px; bottom: 10px;">
+        <!-- <div style="position: fixed; right: 10px; bottom: 10px;">
             <a href="#">我來囉!</a>
         </div>
+        <div id="selectwords" class="visible" style="position: fixed; left: 0px; bottom: 50px; width: 15rem; height: 40rem; background-color: red;">
+            <a href="#">我來囉!</a>
+        </div>
+        <div id="selectwordstab" class="invisible" style="position: fixed; left: 0px; bottom: 50px; width: 3rem; height: 40rem; background-color: rgb(0, 255, 47);">
+            <a href="#">!</a>
+        </div> -->
 
 
     </div>
     <script>
 var rgbPara = 0
+        $("#selectwordstab").on("click", function () {
+            $("#selectwords").addClass("visible");
+            $("#selectwords").removeClass("invisible");
+            $("#selectwordstab").removeClass("invisible");
+            $("#selectwordstab").addClass("invisible");
+        });
+        $("#selectwords").on("click", function () {
+            $("#selectwordstab").addClass("visible");
+            $("#selectwordstab").removeClass("invisible");
+            $("#selectwords").removeClass("visible");
+            $("#selectwords").addClass("invisible");
+        });
         function add() {
             
                 var ggadd = setInterval(function () {

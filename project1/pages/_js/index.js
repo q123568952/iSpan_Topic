@@ -113,51 +113,51 @@ function cleanData() {
 };
 function addNormalMidWords(result) {
     for (let z = 0; z < result.wordList.normalMidWordList.goldMid.length; z++) {
-        $("#goldMid").append(`<span style='color:darkgoldenrod;'> ${result.wordList.normalMidWordList.goldMid[z]} </span>`)
+        $("#goldMid").append(`<span class="h1" style='color:darkgoldenrod;'> ${result.wordList.normalMidWordList.goldMid[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalMidWordList.treeMid.length; z++) {
-        $("#treeMid").append(`<span style='color:darkgreen;'> ${result.wordList.normalMidWordList.treeMid[z]} </span>`)
+        $("#treeMid").append(`<span class="h1" style='color:darkgreen;'> ${result.wordList.normalMidWordList.treeMid[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalMidWordList.waterMid.length; z++) {
-        $("#waterMid").append(`<span style='color:blue;'> ${result.wordList.normalMidWordList.waterMid[z]} </span>`)
+        $("#waterMid").append(`<span class="h1" style='color:blue;'> ${result.wordList.normalMidWordList.waterMid[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalMidWordList.fireMid.length; z++) {
-        $("#fireMid").append(`<span style='color:red;'> ${result.wordList.normalMidWordList.fireMid[z]} </span>`)
+        $("#fireMid").append(`<span class="h1" style='color:red;'> ${result.wordList.normalMidWordList.fireMid[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalMidWordList.groundMid.length; z++) {
-        $("#groundMid").append(`<span style='color:brown;'> ${result.wordList.normalMidWordList.groundMid[z]} </span>`)
+        $("#groundMid").append(`<span class="h1" style='color:brown;'> ${result.wordList.normalMidWordList.groundMid[z]} </span>`)
     };
 };
 function addNormalBotWords(result) {
     for (let z = 0; z < result.wordList.normalBotWordList.goldBot.length; z++) {
-        $("#goldBot").append(`<span style='color:darkgoldenrod;'> ${result.wordList.normalBotWordList.goldBot[z]} </span>`)
+        $("#goldBot").append(`<span class="h1" style='color:darkgoldenrod;'> ${result.wordList.normalBotWordList.goldBot[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalBotWordList.treeBot.length; z++) {
-        $("#treeBot").append(`<span style='color:darkgreen;'> ${result.wordList.normalBotWordList.treeBot[z]} </span>`)
+        $("#treeBot").append(`<span class="h1" style='color:darkgreen;'> ${result.wordList.normalBotWordList.treeBot[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalBotWordList.waterBot.length; z++) {
-        $("#waterBot").append(`<span style='color:blue;'> ${result.wordList.normalBotWordList.waterBot[z]} </span>`)
+        $("#waterBot").append(`<span class="h1" style='color:blue;'> ${result.wordList.normalBotWordList.waterBot[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalBotWordList.fireBot.length; z++) {
-        $("#fireBot").append(`<span style='color:red;'> ${result.wordList.normalBotWordList.fireBot[z]} </span>`)
+        $("#fireBot").append(`<span class="h1" style='color:red;'> ${result.wordList.normalBotWordList.fireBot[z]} </span>`)
     };
     for (let z = 0; z < result.wordList.normalBotWordList.groundBot.length; z++) {
-        $("#groundBot").append(`<span style='color:brown;'> ${result.wordList.normalBotWordList.groundBot[z]} </span>`)
+        $("#groundBot").append(`<span class="h1" style='color:brown;'> ${result.wordList.normalBotWordList.groundBot[z]} </span>`)
     };
 };
 
 function putGoodBadWords(result) {
     for (let i = 0; i < result.wordList.betterMidWordList.length; i++) {
-        $("#goodMidWords").append(`<span id="betterMidWord${i}"> ${result.wordList.betterMidWordList[i]} </span>`);
+        $("#goodMidWords").append(`<span class="h1" id="betterMidWord${i}"> ${result.wordList.betterMidWordList[i]} </span>`);
     }
     for (let i = 0; i < result.wordList.badMidWordList.length; i++) {
-        $("#badMidWords").append(`<span id="badMidWord${i}"> ${result.wordList.badMidWordList[i]} </span>`);
+        $("#badMidWords").append(`<span class="h1" id="badMidWord${i}"> ${result.wordList.badMidWordList[i]} </span>`);
     }
     for (let i = 0; i < result.wordList.betterBotWordList.length; i++) {
-        $("#goodBotWords").append(`<span id="betterBotWord${i}"> ${result.wordList.betterBotWordList[i]} </span>`);
+        $("#goodBotWords").append(`<span class="h1" id="betterBotWord${i}"> ${result.wordList.betterBotWordList[i]} </span>`);
     }
     for (let i = 0; i < result.wordList.badBotWordList.length; i++) {
-        $("#badBotWords").append(`<span id="badBotWord${i}"> ${result.wordList.badBotWordList[i]} </span>`);
+        $("#badBotWords").append(`<span class="h1" id="badBotWord${i}"> ${result.wordList.badBotWordList[i]} </span>`);
     }
 };
 function addGoodBadWordsColor(result) {
