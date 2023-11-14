@@ -1,411 +1,577 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../_css/bootstrap.css">
-    <link rel="icon" href="../icon.jpg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../_css/bootstrap.css" />
+    <link rel="icon" href="../icon.jpg" />
     <script src="../_js/jquery-3.7.1.js"></script>
-    <link rel="stylesheet" href="../_css/jquery.toast.css">
+    <link rel="stylesheet" href="../_css/jquery.toast.css" />
     <title>名字還在想命相館</title>
     <style>
-        #mainButton {
-            background: linear-gradient(rgba(207, 152, 92, 0.1), rgba(255, 255, 255, 0.1));
-        }
+      .jq-toast-single {
+        font-family: DFKai-sb;
+        font-size: 1.5rem;
+        width: 300px;
+        height: 50px;
+        padding-top: 15px;
+      }
+      #mainButton {
+        background: linear-gradient(
+          rgba(207, 152, 92, 0.1),
+          rgba(255, 255, 255, 0.1)
+        );
+      }
 
-        div[class^="container"] {
-            font-family: DFKai-sb;
-            background-attachment: scroll;
-            background: linear-gradient(rgb(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('../a2f43-g90xg_1.jpg');
-            background-size: cover;
-        }
+      div[class^="container"] {
+        font-family: DFKai-sb;
+        background-attachment: scroll;
+        background: linear-gradient(
+            rgb(255, 255, 255, 0.9),
+            rgba(255, 255, 255, 0.9)
+          ),
+          url("../a2f43-g90xg_1.jpg");
+        background-size: cover;
+      }
 
-        .myborderColor1 {
-            border-color: rgba(209, 205, 205, 0.872);
-        }
+      .myborderColor1 {
+        border-color: rgba(209, 205, 205, 0.872);
+      }
 
-        .myWordColor1 {
-            color: rgb(159, 80, 7);
-        }
+      .myWordColor1 {
+        color: rgb(159, 80, 7);
+      }
 
-        .mycol-1 {
-            width: 15%;
-        }
+      .mycol-1 {
+        width: 15%;
+      }
 
-        .mycol-2 {
-            width: 70%;
-        }
+      .mycol-2 {
+        width: 70%;
+      }
 
-        .nav-link {
-            color: black;
+      .nav-link {
+        color: black;
+      }
 
-        }
+      .nav-link:hover {
+        color: rgb(159, 80, 7);
+      }
 
-        .nav-link:hover {
-            color: rgb(159, 80, 7);
-        }
-
-        .nav-tabs .nav-link.active {
-            color: rgb(159, 80, 7);
-            background-color: rgba(255, 255, 255, 0.3);
-        }
+      .nav-tabs .nav-link.active {
+        color: rgb(159, 80, 7);
+        background-color: rgba(255, 255, 255, 0.3);
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container-fluid bg-image pt-4 bg-absolute">
-        <header>
-            <div >
-                <nav class="navbar navbar-expand-md " >
-                    <div class="container" style="background-color: brown;">
-                        <a class="navbar-brand" href="/"><img src="../icon.jpg" style="width: 5rem;"><span class="fw-bold" style="font-size: 1.5rem;">名字還在想命相館</span></a>
-                        <div class="collapse navbar-collapse myWordColor1 " >
-                            <ul class="navbar-nav ml-auto pl-lg-5 pl-0">
-                                <li class="nav-item">
-                                    <a class="nav-link" style="font-size: 2rem;" href="/namescore">姓名分析</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" style="font-size: 2rem;" >|</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" style="font-size: 2rem;" href="/naming">新生兒取名/改名</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
+      <header>
+        <div>
+          <nav class="navbar navbar-expand-md">
+            <div class="container" style="background-color: brown">
+              <a class="navbar-brand" href="/"
+                ><img src="../icon.jpg" style="width: 5rem" /><span
+                  class="fw-bold"
+                  style="font-size: 1.5rem"
+                  >名字還在想命相館</span
+                ></a
+              >
+              <div class="collapse navbar-collapse myWordColor1">
+                <ul class="navbar-nav ml-auto pl-lg-5 pl-0">
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      style="font-size: 2rem"
+                      href="/namescore"
+                      >姓名分析</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" style="font-size: 2rem">|</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" style="font-size: 2rem" href="/naming"
+                      >新生兒取名/改名</a
+                    >
+                  </li>
+                </ul>
+              </div>
             </div>
-        </header>
-        <div class="d-flex" >
-            <div class="d-inline" id="leftPart" style="width: 20%;">
-            </div>
-            <div class="d-inline " id="midPart" style="width: 60%;">
-                <div class=" row ">
-                    <div class="col-12">
-                        <span id="titleMoveing" style="font-size: 6rem; color:rgb(178, 127, 7);">姓名組合生成器</span>
-                    </div>
-                </div>
-                <div>
-                    <label class="myWordColor1 h2" for="lastName">請輸入姓氏:</label>
-                    <input class="input-group w-50 h2" type="text" id="lastName">
-    
-                </div>
-                <div class="mt-3 myWordColor1">
-                    <label class="h2">以下是各屬性組合的分數:</label>
-                    <select name="combinationsinfo" class="form-select form-select-md w-50 h2" style="font-size: 2rem;" id="combinationsinfo">
-                        <option class="h2">請選擇筆畫</option>
-                    </select>
-                </div>
-                <div class="mt-3 border ">
-                    <p class="myWordColor1 h2">點選出生的生肖:</p>
-                    <button id="鼠" class="zodiac btn" style="font-size: 2rem;">鼠</button>
-                    <button id="牛" class="zodiac btn" style="font-size: 2rem;">牛</button>
-                    <button id="虎" class="zodiac btn" style="font-size: 2rem;">虎</button>
-                    <button id="兔" class="zodiac btn" style="font-size: 2rem;">兔</button>
-                    <button id="龍" class="zodiac btn" style="font-size: 2rem;">龍</button>
-                    <button id="蛇" class="zodiac btn" style="font-size: 2rem;">蛇</button>
-                    <button id="馬" class="zodiac btn" style="font-size: 2rem;">馬</button>
-                    <button id="羊" class="zodiac btn" style="font-size: 2rem;">羊</button>
-                    <button id="猴" class="zodiac btn" style="font-size: 2rem;">猴</button>
-                    <button id="雞" class="zodiac btn" style="font-size: 2rem;">雞</button>
-                    <button id="狗" class="zodiac btn" style="font-size: 2rem;">狗</button>
-                    <button id="豬" class="zodiac btn" style="font-size: 2rem;">豬</button>
-                </div>
-                <div class="mt-2">
-                    <div>
-                        <table class="h2">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        外格<br>
-                                        <span id="tableOutScore"></span>
-                                    </td>
-                                    <td>
-                                        ┌<br>│<br>│<br>┤<br>│<br>│<br>└
-                                    </td>
-                                    <td>
-                                        (1 劃)<br><br>
-                                        <span id="tableTop5E"></span>
-                                        <span id="tableTopStrocks"></span>
-                                        劃<br><br>
-                                        <span id="tableMidStrocks"></span>
-                                        劃<br><br>
-                                        <span id="tableBotStrocks"></span>
-                                        劃
-                                    </td>
-                                    <td>
-                                        ┐<br>├天格
-                                        <span id="tableSkyScore"></span>
-                                        <br>┤<br>├人格
-                                        <span id="tableHumanScore"></span>
-                                        <br>┤<br>├地格
-                                        <span id="tableGroundScore"></span>
-                                        <br>┘
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center" valign="top" align="center" colspan="4">＿＿＿＿＿<br>總格
-                                        <span id="tableTotalScore"></span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-    
-                </div>
-                <div class="mt-2">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item h3" role="presentation">
-                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
-                                type="button" role="tab" aria-controls="home" aria-selected="true">選字</button>
-                        </li>
-                        <li class="nav-item h3" role="presentation">
-                            <button class="nav-link " id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
-                                type="button" role="tab" aria-controls="profile" aria-selected="false">姓名評分</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <div class="pt-1">
-                                <table class="table table-bordered myborderColor1">
-                                    <tbody>
-                                        <tr>
-                                            <td class="mycol-1 align-middle h3">姓<br>
-                                                筆畫:<span id="topstrocks"></span>
-                                            </td>
-                                            <td colspan="2" class="text-center align-middle h3"><span id="topword"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td rowspan="3" class="mycol-1 align-middle h3">名<br>(第1個字)<br>
-                                                筆畫:<span id="midstrocks"></span>
-                                            </td>
-                                            <td class="mycol-1 align-middle h3">
-                                                生肖喜字
-                                            </td>
-                                            <td class="mycol-2">
-                                                <div id="goodMidWords" class="">
-    
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="mycol-1 align-middle h3">
-                                                不喜不忌字
-                                            </td>
-                                            <td class="mycol-2">
-                                                <div id="normalMidWords" class="">
-                                                    <div id="goldMid" class="">
-                                                        <p class="h3 fw-bold" style="color:darkgoldenrod">金</p>
-                                                    </div>
-                                                    <div id="treeMid" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:darkgreen;">木</p>
-                                                    </div>
-                                                    <div id="waterMid" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:blue">水</p>
-                                                    </div>
-                                                    <div id="fireMid" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:red">火</p>
-                                                    </div>
-                                                    <div id="groundMid" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:brown">土</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="mycol-1 align-middle h3">
-                                                生肖忌字
-                                            </td>
-                                            <td class="mycol-2">
-                                                <div id="badMidWords" class="">
-    
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td rowspan="3" class="mycol-1 align-middle h3">名<br>(第2個字)<br>
-                                                筆畫:<span id="laststrocks"></span>
-                                            </td>
-                                            <td class="mycol-1 align-middle h3">
-                                                生肖喜字
-                                            </td>
-                                            <td class="mycol-2">
-                                                <div id="goodBotWords" class="">
-    
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="mycol-1 align-middle h3">
-                                                不喜不忌字
-                                            </td>
-                                            <td class="mycol-2">
-                                                <div id="normalBotWords" class="">
-                                                    <div id="goldBot" class="">
-                                                        <p class="h3 fw-bold" style="color:darkgoldenrod">金</p>
-                                                    </div>
-                                                    <div id="treeBot" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:darkgreen;">木</p>
-                                                    </div>
-                                                    <div id="waterBot" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:blue">水</p>
-                                                    </div>
-                                                    <div id="fireBot" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:red">火</p>
-                                                    </div>
-                                                    <div id="groundBot" class="mt-2">
-                                                        <p class="h3 fw-bold" style="color:brown">土</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="mycol-1 align-middle h3">
-                                                生肖忌字
-                                            </td>
-                                            <td class="mycol-2 ">
-                                                <div id="badBotWords" class="">
-    
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-    
-                                </table>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                            <div class="pt-1">
-                                <table class="table table-bordered myborderColor1">
-                                    <tbody>
-                                        <tr>
-                                            <th colspan="3" class="text-center h2">三才姓名學</th>
-                                        </tr>
-                                        <tr>
-                                            <td class="mycol-1 align-middle h3"><span id="name5Es"></span></td>
-                                            <td class="mycol-1 align-middle h3"><span id="name5EsLevel"></span></td>
-                                            <td class="mycol-2 align-middle h3"><span id="name5EsResult"></span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="pt-1">
-                                <table class="table table-bordered myborderColor1">
-                                    <tbody>
-                                        <tr>
-                                            <th colspan="3" class="text-center h4">五格姓名學</th>
-                                        </tr>
-                                        <tr>
-                                            <td id="skyScore" class="mycol-1 align-middle h3">
-                                                <p>天格</p>
-                                            </td>
-                                            <td class="mycol-1 align-middle h3"><span id="skyScoreLevel"></span></td>
-                                            <td class="mycol-2 align-middle h3"><span id="skyScoreResult"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="humanScore" class="mycol-1 align-middle h3">
-                                                <p>人格</p>
-                                            </td>
-                                            <td class="mycol-1 align-middle h3"><span id="humanScoreLevel"></span></td>
-                                            <td class="mycol-2 align-middle h3"><span id="humanScoreResult"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="groundScore" class="mycol-1 align-middle h3">
-                                                <p>地格</p>
-                                            </td>
-                                            <td class="mycol-1 align-middle h3"><span id="groundScoreLevel"></span></td>
-                                            <td class="mycol-2 align-middle h3"><span id="groundScoreResult"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="outScore" class="mycol-1 align-middle h3">
-                                                <p>外格</p>
-                                            </td>
-                                            <td class="mycol-1 align-middle h3"><span id="outScoreLevel"></span></td>
-                                            <td class="mycol-2 align-middle h3"><span id="outScoreResult"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="totalScore" class="mycol-1 align-middle h3">
-                                                <p>總格</p>
-                                            </td>
-                                            <td class="mycol-1 align-middle h3"><span id="totalScoreLevel"></span></td>
-                                            <td class="mycol-2 align-middle h3"><span id="totalScoreResult"></span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-    
-                        </div>
-                    </div>
-    
-                </div>
-    
-            </div>
-            <div class="d-inline" id="rightPart" style="width: 20%;">
-            </div>
+          </nav>
         </div>
+      </header>
+      <div class="d-flex">
+        <div class="d-inline" id="leftPart" style="width: 20%"></div>
+        <div class="d-inline" id="midPart" style="width: 60%">
+          <div class="row">
+            <div class="col-12">
+              <span
+                id="titleMoveing"
+                style="font-size: 6rem; color: rgb(178, 127, 7)"
+                >姓名組合生成器</span
+              >
+            </div>
+          </div>
+          <div>
+            <label class="myWordColor1 h2" for="lastName">請輸入姓氏:</label>
+            <input class="input-group w-50 h2" type="text" id="lastName" />
+          </div>
+          <div class="mt-3 myWordColor1">
+            <label class="h2">以下是各屬性組合的分數:</label>
+            <select
+              name="combinationsinfo"
+              class="form-select form-select-md w-50 h2"
+              style="font-size: 2rem"
+              id="combinationsinfo"
+            >
+              <option class="h2">請選擇筆畫</option>
+            </select>
+          </div>
+          <div class="mt-3 border">
+            <p class="myWordColor1 h2">點選出生的生肖:</p>
+            <button id="鼠" class="zodiac btn" style="font-size: 2rem">
+              鼠
+            </button>
+            <button id="牛" class="zodiac btn" style="font-size: 2rem">
+              牛
+            </button>
+            <button id="虎" class="zodiac btn" style="font-size: 2rem">
+              虎
+            </button>
+            <button id="兔" class="zodiac btn" style="font-size: 2rem">
+              兔
+            </button>
+            <button id="龍" class="zodiac btn" style="font-size: 2rem">
+              龍
+            </button>
+            <button id="蛇" class="zodiac btn" style="font-size: 2rem">
+              蛇
+            </button>
+            <button id="馬" class="zodiac btn" style="font-size: 2rem">
+              馬
+            </button>
+            <button id="羊" class="zodiac btn" style="font-size: 2rem">
+              羊
+            </button>
+            <button id="猴" class="zodiac btn" style="font-size: 2rem">
+              猴
+            </button>
+            <button id="雞" class="zodiac btn" style="font-size: 2rem">
+              雞
+            </button>
+            <button id="狗" class="zodiac btn" style="font-size: 2rem">
+              狗
+            </button>
+            <button id="豬" class="zodiac btn" style="font-size: 2rem">
+              豬
+            </button>
+          </div>
+          <div class="mt-2">
+            <div>
+              <table class="h2">
+                <tbody>
+                  <tr>
+                    <td>
+                      外格<br />
+                      <span id="tableOutScore"></span>
+                    </td>
+                    <td>┌<br />│<br />│<br />┤<br />│<br />│<br />└</td>
+                    <td>
+                      (1 劃)<br /><br />
+                      <span id="tableTop5E"></span>
+                      <span id="tableTopStrocks"></span>
+                      劃<br /><br />
+                      <span id="tableMidStrocks"></span>
+                      劃<br /><br />
+                      <span id="tableBotStrocks"></span>
+                      劃
+                    </td>
+                    <td>
+                      ┐<br />├天格
+                      <span id="tableSkyScore"></span>
+                      <br />┤<br />├人格
+                      <span id="tableHumanScore"></span>
+                      <br />┤<br />├地格
+                      <span id="tableGroundScore"></span>
+                      <br />┘
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="text-center"
+                      valign="top"
+                      align="center"
+                      colspan="4"
+                    >
+                      ＿＿＿＿＿<br />總格
+                      <span id="tableTotalScore"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="mt-3">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item h2" role="presentation">
+                <button
+                  class="nav-link active"
+                  id="home-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#home"
+                  type="button"
+                  role="tab"
+                  aria-controls="home"
+                  aria-selected="true"
+                >
+                  選字
+                </button>
+              </li>
+              <li class="nav-item h2" role="presentation">
+                <button
+                  class="nav-link"
+                  id="profile-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#profile"
+                  type="button"
+                  role="tab"
+                  aria-controls="profile"
+                  aria-selected="false"
+                >
+                  姓名評分
+                </button>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="home"
+                role="tabpanel"
+                aria-labelledby="home-tab"
+              >
+                <div class="pt-1">
+                  <table class="table table-bordered myborderColor1">
+                    <tbody>
+                      <tr>
+                        <td class="mycol-1 align-middle h2">
+                          姓<br />
+                          筆畫:<span id="topstrocks"></span>
+                        </td>
+                        <td colspan="2" class="text-center align-middle h2">
+                          <span id="topword"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td rowspan="3" class="mycol-1 align-middle h2">
+                          名<br />(第1個字)<br />
+                          筆畫:<span id="midstrocks"></span>
+                        </td>
+                        <td class="mycol-1 align-middle h2">生肖喜字</td>
+                        <td class="mycol-2">
+                          <div id="goodMidWords" class=""></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mycol-1 align-middle h2">不喜不忌字</td>
+                        <td class="mycol-2">
+                          <div id="normalMidWords" class="">
+                            <div id="goldMid" class="">
+                              <p
+                                class="h3 fw-bold"
+                                style="color: darkgoldenrod"
+                              >
+                                金
+                              </p>
+                            </div>
+                            <div id="treeMid" class="mt-2">
+                              <p class="h3 fw-bold" style="color: darkgreen">
+                                木
+                              </p>
+                            </div>
+                            <div id="waterMid" class="mt-2">
+                              <p class="h3 fw-bold" style="color: blue">水</p>
+                            </div>
+                            <div id="fireMid" class="mt-2">
+                              <p class="h3 fw-bold" style="color: red">火</p>
+                            </div>
+                            <div id="groundMid" class="mt-2">
+                              <p class="h3 fw-bold" style="color: brown">土</p>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mycol-1 align-middle h2">生肖忌字</td>
+                        <td class="mycol-2">
+                          <div id="badMidWords" class=""></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td rowspan="3" class="mycol-1 align-middle h2">
+                          名<br />(第2個字)<br />
+                          筆畫:<span id="laststrocks"></span>
+                        </td>
+                        <td class="mycol-1 align-middle h2">生肖喜字</td>
+                        <td class="mycol-2">
+                          <div id="goodBotWords" class=""></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mycol-1 align-middle h2">不喜不忌字</td>
+                        <td class="mycol-2">
+                          <div id="normalBotWords" class="">
+                            <div id="goldBot" class="">
+                              <p
+                                class="h3 fw-bold"
+                                style="color: darkgoldenrod"
+                              >
+                                金
+                              </p>
+                            </div>
+                            <div id="treeBot" class="mt-2">
+                              <p class="h3 fw-bold" style="color: darkgreen">
+                                木
+                              </p>
+                            </div>
+                            <div id="waterBot" class="mt-2">
+                              <p class="h3 fw-bold" style="color: blue">水</p>
+                            </div>
+                            <div id="fireBot" class="mt-2">
+                              <p class="h3 fw-bold" style="color: red">火</p>
+                            </div>
+                            <div id="groundBot" class="mt-2">
+                              <p class="h3 fw-bold" style="color: brown">土</p>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mycol-1 align-middle h2">生肖忌字</td>
+                        <td class="mycol-2">
+                          <div id="badBotWords" class=""></div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="profile"
+                role="tabpanel"
+                aria-labelledby="profile-tab"
+              >
+                <div class="pt-1">
+                  <table class="table table-bordered myborderColor1">
+                    <tbody>
+                      <tr>
+                        <th colspan="3" class="text-center h2">三才姓名學</th>
+                      </tr>
+                      <tr>
+                        <td class="mycol-1 align-middle h2">
+                          <span id="name5Es"></span>
+                        </td>
+                        <td class="mycol-1 align-middle h2">
+                          <span id="name5EsLevel"></span>
+                        </td>
+                        <td class="mycol-2 align-middle h2">
+                          <span id="name5EsResult"></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="pt-1">
+                  <table class="table table-bordered myborderColor1">
+                    <tbody>
+                      <tr>
+                        <th colspan="3" class="text-center h2">五格姓名學</th>
+                      </tr>
+                      <tr>
+                        <td id="skyScore" class="mycol-1 align-middle h2">
+                          <p>天格</p>
+                        </td>
+                        <td class="mycol-1 align-middle h2">
+                          <span id="skyScoreLevel"></span>
+                        </td>
+                        <td class="mycol-2 align-middle h2">
+                          <span id="skyScoreResult"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td id="humanScore" class="mycol-1 align-middle h2">
+                          <p>人格</p>
+                        </td>
+                        <td class="mycol-1 align-middle h2">
+                          <span id="humanScoreLevel"></span>
+                        </td>
+                        <td class="mycol-2 align-middle h2">
+                          <span id="humanScoreResult"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td id="groundScore" class="mycol-1 align-middle h2">
+                          <p>地格</p>
+                        </td>
+                        <td class="mycol-1 align-middle h2">
+                          <span id="groundScoreLevel"></span>
+                        </td>
+                        <td class="mycol-2 align-middle h2">
+                          <span id="groundScoreResult"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td id="outScore" class="mycol-1 align-middle h2">
+                          <p>外格</p>
+                        </td>
+                        <td class="mycol-1 align-middle h2">
+                          <span id="outScoreLevel"></span>
+                        </td>
+                        <td class="mycol-2 align-middle h2">
+                          <span id="outScoreResult"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td id="totalScore" class="mycol-1 align-middle h2">
+                          <p>總格</p>
+                        </td>
+                        <td class="mycol-1 align-middle h2">
+                          <span id="totalScoreLevel"></span>
+                        </td>
+                        <td class="mycol-2 align-middle h2">
+                          <span id="totalScoreResult"></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-inline" id="rightPart" style="width: 20%"></div>
+      </div>
 
-        <footer>
+      <footer></footer>
 
-        </footer>
+      <div
+        id="goback"
+        class="text-center card bg-transparent border-0"
+        style="position: fixed; right: 50px; bottom: 50px"
+      >
+        <img
+          src="./paintbrush-147979_1280.png"
+          style="width: 100px; transform: rotate(-30deg); opacity: 0.7"
+        />
 
-        <!-- <div style="position: fixed; right: 10px; bottom: 10px;">
+        <div class="card-body">
+          <h5 class="card-title link-underline-light">回到頂端</h5>
+          <a href="#" class="stretched-link"></a>
+        </div>
+      </div>
+      <!-- <div id="selectwords" class="visible" style="position: fixed; left: 0px; bottom: 50px; width: 15rem; height: 40rem; background-color: red;">
             <a href="#">我來囉!</a>
-        </div>
-        <div id="selectwords" class="visible" style="position: fixed; left: 0px; bottom: 50px; width: 15rem; height: 40rem; background-color: red;">
-            <a href="#">我來囉!</a>
-        </div>
-        <div id="selectwordstab" class="invisible" style="position: fixed; left: 0px; bottom: 50px; width: 3rem; height: 40rem; background-color: rgb(0, 255, 47);">
+        </div> -->
+      <!-- <div id="selectwordstab" class="invisible" style="position: fixed; left: 0px; bottom: 50px; width: 3rem; height: 40rem; background-color: rgb(0, 255, 47);">
             <a href="#">!</a>
         </div> -->
-
-
     </div>
     <script>
-var rgbPara = 0
-        $("#selectwordstab").on("click", function () {
-            $("#selectwords").addClass("visible");
-            $("#selectwords").removeClass("invisible");
-            $("#selectwordstab").removeClass("invisible");
-            $("#selectwordstab").addClass("invisible");
-        });
-        $("#selectwords").on("click", function () {
-            $("#selectwordstab").addClass("visible");
-            $("#selectwordstab").removeClass("invisible");
-            $("#selectwords").removeClass("visible");
-            $("#selectwords").addClass("invisible");
-        });
-        function add() {
-            
-                var ggadd = setInterval(function () {
-                    rgbPara+=1
-                    $("#titleMoveing").css("color", `rgb(${rgbPara+178}, ${rgbPara+127}, ${rgbPara+7})`);
-                    if (rgbPara>50){
-                        reduce();
-                        clearInterval(ggadd)
-                    }
-                    
-                }, 10)
-    
-            };
-         function reduce() {
-             var ggred =setInterval(function () {
-                    rgbPara-=1
-                    $("#titleMoveing").css("color", `rgb(${rgbPara+178}, ${rgbPara+127}, ${rgbPara+7})`);
-                    if (rgbPara<-100){
-                        add();
-                        clearInterval(ggred);
-                    }
-                }, 10)
-         }   
-         add();
-         
+      function pos(tag) {
+        var ggpos = setInterval(function () {
+          $(".votex").css("transform", "rotate(0deg)");
+          nag();
+          clearInterval(ggpos);
+        }, 150);
+      }
+      function nag() {
+        var ggnag = setInterval(function () {
+          $(".votex").css("transform", "rotate(-30deg)");
+          pos();
+          clearInterval(ggnag);
+        }, 150);
+      }
+      function add() {
+        var ggadd = setInterval(function () {
+          rgbPara += 1;
+          $("#titleMoveing").css(
+            "color",
+            `rgb(${rgbPara + 178}, ${rgbPara + 127}, ${rgbPara + 7})`
+          );
+          if (rgbPara > 50) {
+            reduce();
+            clearInterval(ggadd);
+          }
+        }, 10);
+      }
+      function reduce() {
+        var ggred = setInterval(function () {
+          rgbPara -= 1;
+          $("#titleMoveing").css(
+            "color",
+            `rgb(${rgbPara + 178}, ${rgbPara + 127}, ${rgbPara + 7})`
+          );
+          if (rgbPara < -100) {
+            add();
+            clearInterval(ggred);
+          }
+        }, 10);
+      }
+
+      var rgbPara = 0;
+      $("#selectwordstab").on("click", function () {
+        $("#selectwords").addClass("visible");
+        $("#selectwords").removeClass("invisible");
+        $("#selectwordstab").removeClass("invisible");
+        $("#selectwordstab").addClass("invisible");
+      });
+      $("#selectwords").on("click", function () {
+        $("#selectwordstab").addClass("visible");
+        $("#selectwordstab").removeClass("invisible");
+        $("#selectwords").removeClass("visible");
+        $("#selectwords").addClass("invisible");
+      });
+      $("#goback").on("mouseenter", function () {
+        $("#goback img").addClass("votex");
+        pos();
+      });
+      $("#goback").on("mouseleave", function () {
+        $("#goback img").removeClass("votex");
+      });
+
+      function add() {
+        var ggadd = setInterval(function () {
+          rgbPara += 1;
+          $("#titleMoveing").css(
+            "color",
+            `rgb(${rgbPara + 178}, ${rgbPara + 127}, ${rgbPara + 7})`
+          );
+          if (rgbPara > 50) {
+            reduce();
+            clearInterval(ggadd);
+          }
+        }, 10);
+      }
+      function reduce() {
+        var ggred = setInterval(function () {
+          rgbPara -= 1;
+          $("#titleMoveing").css(
+            "color",
+            `rgb(${rgbPara + 178}, ${rgbPara + 127}, ${rgbPara + 7})`
+          );
+          if (rgbPara < -100) {
+            add();
+            clearInterval(ggred);
+          }
+        }, 10);
+      }
+      add();
     </script>
 
     <script src="../_js/bootstrap.js"></script>
     <script type="text/javascript" src="../_js/jquery.toast.js"></script>
     <script src="../_js/index.js"></script>
-</body>
-
+  </body>
 </html>

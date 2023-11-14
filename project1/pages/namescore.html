@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="../_css/jquery.toast.css">
     <title>名字還在想命相館</title>
     <style>
+        .jq-toast-single {
+        font-family: DFKai-sb;
+        font-size: 1.5rem;
+        width: 300px;
+        height: 50px;
+        padding-top: 15px;
+      }
         #mainButton {
             background: linear-gradient(rgba(207, 152, 92, 0.1), rgba(255, 255, 255, 0.1));
         }
@@ -222,6 +229,21 @@
 
             </div>
         </div>
+        <div
+        id="goback"
+        class="text-center card bg-transparent border-0"
+        style="position: fixed; right: 50px; bottom: 50px"
+      >
+        <img
+          src="./paintbrush-147979_1280.png"
+          style="width: 100px; transform: rotate(-30deg); opacity: 0.7"
+        />
+
+        <div class="card-body">
+          <h5 class="card-title link-underline-light">回到頂端</h5>
+          <a href="#" class="stretched-link"></a>
+        </div>
+      </div>
         <footer>
 
         </footer>
@@ -229,6 +251,29 @@
 
     </div>
     <script>
+
+function pos(tag) {
+        var ggpos = setInterval(function () {
+          $(".votex").css("transform", "rotate(0deg)");
+          nag();
+          clearInterval(ggpos);
+        }, 150);
+      }
+      function nag() {
+        var ggnag = setInterval(function () {
+          $(".votex").css("transform", "rotate(-30deg)");
+          pos();
+          clearInterval(ggnag);
+        }, 150);
+      }
+
+$("#goback").on("mouseenter", function () {
+        $("#goback img").addClass("votex");
+        pos();
+      });
+      $("#goback").on("mouseleave", function () {
+        $("#goback img").removeClass("votex");
+      });
         var pxx = 0
         function add() {
             

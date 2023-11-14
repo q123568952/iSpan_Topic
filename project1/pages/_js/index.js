@@ -17,10 +17,7 @@ $(document).ready(async function () {
         };
         name5E = result.lastName5E;
         let combinationsinfo = result.combinationsinfoList;
-        for (let i = 0; i < combinationsinfo.length; i++) {
-            temp = combinationsinfo[i];
-            $("#combinationsinfo").append(`<option value='${temp}'>${temp}: </option>`);
-        };
+        combinationsinfo.map((ele)=>{$("#combinationsinfo").append(`<option value='${ele}'>${ele}: </option>`);})
     });
 
     $("button[class^=zodiac]").on("click", async function () {
@@ -112,119 +109,53 @@ function cleanData() {
     $("#totalScore").find("br").remove();
 };
 function addNormalMidWords(result) {
-    for (let z = 0; z < result.wordList.normalMidWordList.goldMid.length; z++) {
-        $("#goldMid").append(`<span class="h1" style='color:darkgoldenrod;'> ${result.wordList.normalMidWordList.goldMid[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalMidWordList.treeMid.length; z++) {
-        $("#treeMid").append(`<span class="h1" style='color:darkgreen;'> ${result.wordList.normalMidWordList.treeMid[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalMidWordList.waterMid.length; z++) {
-        $("#waterMid").append(`<span class="h1" style='color:blue;'> ${result.wordList.normalMidWordList.waterMid[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalMidWordList.fireMid.length; z++) {
-        $("#fireMid").append(`<span class="h1" style='color:red;'> ${result.wordList.normalMidWordList.fireMid[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalMidWordList.groundMid.length; z++) {
-        $("#groundMid").append(`<span class="h1" style='color:brown;'> ${result.wordList.normalMidWordList.groundMid[z]} </span>`)
-    };
+    result.wordList.normalMidWordList.goldMid.map((ele)=>{$("#goldMid").append(`<span class="h2" style='color:darkgoldenrod;'> ${ele} </span>`)});
+    result.wordList.normalMidWordList.treeMid.map((ele)=>{$("#treeMid").append(`<span class="h2" style='color:rgb(79, 209, 56);'> ${ele} </span>`)});
+    result.wordList.normalMidWordList.waterMid.map((ele)=>{$("#waterMid").append(`<span class="h2" style='color:blue;'> ${ele} </span>`)});
+    result.wordList.normalMidWordList.fireMid.map((ele)=>{$("#fireMid").append(`<span class="h2"  style='color:red;'> ${ele} </span>`)});
+    result.wordList.normalMidWordList.groundMid.map((ele)=>{$("#groundMid").append(`<span class="h2" style='color:brown;'> ${ele} </span>`)});
 };
 function addNormalBotWords(result) {
-    for (let z = 0; z < result.wordList.normalBotWordList.goldBot.length; z++) {
-        $("#goldBot").append(`<span class="h1" style='color:darkgoldenrod;'> ${result.wordList.normalBotWordList.goldBot[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalBotWordList.treeBot.length; z++) {
-        $("#treeBot").append(`<span class="h1" style='color:darkgreen;'> ${result.wordList.normalBotWordList.treeBot[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalBotWordList.waterBot.length; z++) {
-        $("#waterBot").append(`<span class="h1" style='color:blue;'> ${result.wordList.normalBotWordList.waterBot[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalBotWordList.fireBot.length; z++) {
-        $("#fireBot").append(`<span class="h1" style='color:red;'> ${result.wordList.normalBotWordList.fireBot[z]} </span>`)
-    };
-    for (let z = 0; z < result.wordList.normalBotWordList.groundBot.length; z++) {
-        $("#groundBot").append(`<span class="h1" style='color:brown;'> ${result.wordList.normalBotWordList.groundBot[z]} </span>`)
-    };
+    result.wordList.normalBotWordList.goldBot.map((ele)=>{$("#goldBot").append(`<span class="h2" style='color:darkgoldenrod;'> ${ele} </span>`)});
+    result.wordList.normalBotWordList.treeBot.map((ele)=>{$("#treeBot").append(`<span class="h2" style='color:rgb(79, 209, 56);'> ${ele} </span>`)});
+    result.wordList.normalBotWordList.waterBot.map((ele)=>{$("#waterBot").append(`<span class="h2" style='color:blue;'> ${ele} </span>`)});
+    result.wordList.normalBotWordList.fireBot.map((ele)=>{$("#fireBot").append(`<span class="h2"  style='color:red;'> ${ele} </span>`)});
+    result.wordList.normalBotWordList.groundBot.map((ele)=>{$("#groundBot").append(`<span class="h2" style='color:brown;'> ${ele} </span>`)});
 };
 
 function putGoodBadWords(result) {
-    for (let i = 0; i < result.wordList.betterMidWordList.length; i++) {
-        $("#goodMidWords").append(`<span class="h1" id="betterMidWord${i}"> ${result.wordList.betterMidWordList[i]} </span>`);
-    }
-    for (let i = 0; i < result.wordList.badMidWordList.length; i++) {
-        $("#badMidWords").append(`<span class="h1" id="badMidWord${i}"> ${result.wordList.badMidWordList[i]} </span>`);
-    }
-    for (let i = 0; i < result.wordList.betterBotWordList.length; i++) {
-        $("#goodBotWords").append(`<span class="h1" id="betterBotWord${i}"> ${result.wordList.betterBotWordList[i]} </span>`);
-    }
-    for (let i = 0; i < result.wordList.badBotWordList.length; i++) {
-        $("#badBotWords").append(`<span class="h1" id="badBotWord${i}"> ${result.wordList.badBotWordList[i]} </span>`);
-    }
+    result.wordList.betterMidWordList.map((ele, i)=>{$("#goodMidWords").append(`<span class="h2" id="betterMidWord${i}"> ${ele} </span>`)});
+    result.wordList.badMidWordList.map((ele, i)=>{$("#badMidWords").append(`<span class="h2" id="badMidWord${i}"> ${ele} </span>`)});
+    result.wordList.betterBotWordList.map((ele, i)=>{$("#goodBotWords").append(`<span class="h2" id="betterBotWord${i}"> ${ele} </span>`)});
+    result.wordList.badBotWordList.map((ele, i)=>{$("#badBotWords").append(`<span class="h2" id="badBotWord${i}"> ${ele} </span>`)});
 };
 function addGoodBadWordsColor(result) {
     //名一好字上色
-    for (let i = 0; i < result.wordList.betterMidRepeats.gold.length; i++) {
-        $(`#betterMidWord${result.wordList.betterMidRepeats.gold[i]}`).css("color", "darkgoldenrod");
-    }
-    for (let i = 0; i < result.wordList.betterMidRepeats.tree.length; i++) {
-        $(`#betterMidWord${result.wordList.betterMidRepeats.tree[i]}`).css("color", "darkgreen");
-    }
-    for (let i = 0; i < result.wordList.betterMidRepeats.water.length; i++) {
-        $(`#betterMidWord${result.wordList.betterMidRepeats.water[i]}`).css("color", "blue");
-    }
-    for (let i = 0; i < result.wordList.betterMidRepeats.fire.length; i++) {
-        $(`#betterMidWord${result.wordList.betterMidRepeats.fire[i]}`).css("color", "red");
-    }
-    for (let i = 0; i < result.wordList.betterMidRepeats.ground.length; i++) {
-        $(`#betterMidWord${result.wordList.betterMidRepeats.ground[i]}`).css("color", "brown");
-    }
+    result.wordList.betterMidRepeats.gold.map((ele)=>{$(`#betterMidWord${ele}`).css("color", "darkgoldenrod");});
+    result.wordList.betterMidRepeats.tree.map((ele)=>{$(`#betterMidWord${ele}`).css("color", "rgb(79, 209, 56)");});
+    result.wordList.betterMidRepeats.water.map((ele)=>{$(`#betterMidWord${ele}`).css("color", "blue");});
+    result.wordList.betterMidRepeats.fire.map((ele)=>{$(`#betterMidWord${ele}`).css("color", "red");});
+    result.wordList.betterMidRepeats.ground.map((ele)=>{$(`#betterMidWord${ele}`).css("color", "brown");});
     //名一壞字上色
-    for (let k = 0; k < result.wordList.badMidRepeats.gold.length; k++) {
-        $(`#badMidWord${result.wordList.badMidRepeats.gold[k]}`).css("color", "darkgoldenrod");
-    }
-    for (let k = 0; k < result.wordList.badMidRepeats.tree.length; k++) {
-        $(`#badMidWord${result.wordList.badMidRepeats.tree[k]}`).css("color", "darkgreen");
-    }
-    for (let k = 0; k < result.wordList.badMidRepeats.water.length; k++) {
-        $(`#badMidWord${result.wordList.badMidRepeats.water[k]}`).css("color", "blue");
-    }
-    for (let k = 0; k < result.wordList.badMidRepeats.fire.length; k++) {
-        $(`#badMidWord${result.wordList.badMidRepeats.fire[k]}`).css("color", "red");
-    }
-    for (let k = 0; k < result.wordList.badMidRepeats.ground.length; k++) {
-        $(`#badMidWord${result.wordList.badMidRepeats.ground[k]}`).css("color", "brown");
-    }
+    result.wordList.badMidRepeats.gold.map((ele)=>{$(`#badMidWord${ele}`).css("color", "darkgoldenrod");});
+    result.wordList.badMidRepeats.tree.map((ele)=>{$(`#badMidWord${ele}`).css("color", "rgb(79, 209, 56)");});
+    result.wordList.badMidRepeats.water.map((ele)=>{$(`#badMidWord${ele}`).css("color", "blue");});
+    result.wordList.badMidRepeats.fire.map((ele)=>{$(`#badMidWord${ele}`).css("color", "red");});
+    result.wordList.badMidRepeats.ground.map((ele)=>{$(`#badMidWord${ele}`).css("color", "brown");});
+
     //名二好字上色
-    for (let i = 0; i < result.wordList.betterBotRepeats.gold.length; i++) {
-        $(`#betterBotWord${result.wordList.betterBotRepeats.gold[i]}`).css("color", "darkgoldenrod");
-    }
-    for (let i = 0; i < result.wordList.betterBotRepeats.tree.length; i++) {
-        $(`#betterBotWord${result.wordList.betterBotRepeats.tree[i]}`).css("color", "darkgreen");
-    }
-    for (let i = 0; i < result.wordList.betterBotRepeats.water.length; i++) {
-        $(`#betterBotWord${result.wordList.betterBotRepeats.water[i]}`).css("color", "blue");
-    }
-    for (let i = 0; i < result.wordList.betterBotRepeats.fire.length; i++) {
-        $(`#betterBotWord${result.wordList.betterBotRepeats.fire[i]}`).css("color", "red");
-    }
-    for (let i = 0; i < result.wordList.betterBotRepeats.ground.length; i++) {
-        $(`#betterBotWord${result.wordList.betterBotRepeats.ground[i]}`).css("color", "brown");
-    }
+    result.wordList.betterBotRepeats.gold.map((ele)=>{$(`#betterBotWord${ele}`).css("color", "darkgoldenrod");});
+    result.wordList.betterBotRepeats.tree.map((ele)=>{$(`#betterBotWord${ele}`).css("color", "rgb(79, 209, 56)");});
+    result.wordList.betterBotRepeats.water.map((ele)=>{$(`#betterBotWord${ele}`).css("color", "blue");});
+    result.wordList.betterBotRepeats.fire.map((ele)=>{$(`#betterBotWord${ele}`).css("color", "red");});
+    result.wordList.betterBotRepeats.ground.map((ele)=>{$(`#betterBotWord${ele}`).css("color", "brown");});
+   
     //名二壞字上色
-    for (let k = 0; k < result.wordList.badBotRepeats.gold.length; k++) {
-        $(`#badBotWord${result.wordList.badBotRepeats.gold[k]}`).css("color", "darkgoldenrod");
-    }
-    for (let k = 0; k < result.wordList.badBotRepeats.tree.length; k++) {
-        $(`#badBotWord${result.wordList.badBotRepeats.tree[k]}`).css("color", "darkgreen");
-    }
-    for (let k = 0; k < result.wordList.badBotRepeats.water.length; k++) {
-        $(`#badBotWord${result.wordList.badBotRepeats.water[k]}`).css("color", "blue");
-    }
-    for (let k = 0; k < result.wordList.badBotRepeats.fire.length; k++) {
-        $(`#badBotWord${result.wordList.badBotRepeats.fire[k]}`).css("color", "red");
-    }
-    for (let k = 0; k < result.wordList.badBotRepeats.ground.length; k++) {
-        $(`#badBotWord${result.wordList.badBotRepeats.ground[k]}`).css("color", "brown");
-    }
+    result.wordList.badBotRepeats.gold.map((ele)=>{$(`#badBotWord${ele}`).css("color", "darkgoldenrod");});
+    result.wordList.badBotRepeats.tree.map((ele)=>{$(`#badBotWord${ele}`).css("color", "rgb(79, 209, 56)");});
+    result.wordList.badBotRepeats.water.map((ele)=>{$(`#badBotWord${ele}`).css("color", "blue");});
+    result.wordList.badBotRepeats.fire.map((ele)=>{$(`#badBotWord${ele}`).css("color", "red");});
+    result.wordList.badBotRepeats.ground.map((ele)=>{$(`#badBotWord${ele}`).css("color", "brown");});
 };
 
 

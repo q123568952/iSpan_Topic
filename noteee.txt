@@ -1,12 +1,2 @@
-SELECT draw, words FROM zodiacword WHERE words like "%台%";
-SELECT draw, words FROM zodiacword WHERE draw = (select draw from chinesewords where words LIKE "%台%");
-UPDATE zodiacword set words = REPLACE(words, "台","") WHERE words like "%台%"; 
-UPDATE zodiacword set words = concat(words, "台") WHERE draw = (select draw from chinesewords where words LIKE "%台%");
-SELECT draw, words FROM zodiacword WHERE words like "%台%";
-SELECT draw, words FROM zodiacword WHERE draw = (select draw from chinesewords where words LIKE "%台%");
-
-
-
-
-
-SELECT * FROM `chinesewords` WHERE words like "%澳%"
+1. 調整 promise and async/await
+2. 可以改用array.map()省去for+宣告一個空array
