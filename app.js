@@ -31,7 +31,7 @@ console.log("Web伺服器就緒，開始接受用戶端連線.");
 console.log("「Ctrl + C」可結束伺服器程式.");
 
 // 通用模板
-async function asyncsql(sql, param) {
+function asyncsql(sql, param) {
   return new Promise(function (res, rej) {
     connection.query(sql, param, function (err, rows) {
       if (err) {
@@ -113,9 +113,7 @@ async function get5EResult(sancai5E) {
   }
 }
 
-
 function addColor(sancai5E) {
-  
   let colorSancai5E = "";
   for (let i = 0; i < sancai5E.length; i++) {
     switch (sancai5E[i]) {
@@ -185,7 +183,7 @@ async function addParaScores(strockesList, chinese5E) {
     let targetList = ["sky", "human", "ground", "out", "total"];
     for (let i = 0; i < paras.length; i++) {
       let result = await getparaScoresToClient(paras[i]);
-   
+
       tempTargetLevel = targetList[i] + "ScoreLevel";
       tempTargetResult = targetList[i] + "ScoreResult";
       paraScoresToClient[tempTargetLevel] = result.scoreLevel;
@@ -215,443 +213,179 @@ async function addParaScores(strockesList, chinese5E) {
     }
     paraScoresToClient.para5EList = getPara5E(paras, chinese5E);
   }
- paraScoresToClient.color5eList = paraScoresToClient.para5EList.map((ele)=>addColor(ele));
+  paraScoresToClient.color5eList = paraScoresToClient.para5EList.map((ele) =>
+    addColor(ele)
+  );
   return paraScoresToClient;
 }
+
 async function getCombinations(strockes, chinese5E) {
   let skyPara = strockes + 1;
   let sky5E = chinese5E[skyPara % 10];
-
-  async function getcombinationsinfo(sky5E, strockes) {
-    let combinationsinfo = [];
-    let promise1 = new Promise(function (good, bad) {
-      connection.query(
-        "select fiveelementcombination from sancaidata where (fiveelementcombination like ? and value >= 8)",
-        [sky5E + "%"],
-        async function (err, rows) {
-          if (rows.length <= 0) {
-            bad("nodata");
-            return;
-          }
-          if (err) {
-            bad(err);
-            return;
-          }
-
-          for (let z = 0; z < rows.length; z++) {
-            let temp5ecombe = rows[z].fiveelementcombination;
-            for (
-              let humanPara = strockes + 1;
-              humanPara <= strockes + 26;
-              humanPara++
-            ) {
-              let human5E = chinese5E[humanPara % 10];
-              if (human5E == temp5ecombe[1]) {
-                let midstrockes = humanPara - strockes;
-                for (
-                  let groundPara = midstrockes + 1;
-                  groundPara <= midstrockes + 26;
-                  groundPara++
-                ) {
-                  let ground5E = chinese5E[groundPara % 10];
-                  if (ground5E == temp5ecombe[2]) {
-                    let endstrockes = groundPara - midstrockes;
-                    let nameScore = await getNameScore(
-                      strockes,
-                      midstrockes,
-                      endstrockes
-                    );
-                    if (nameScore >= 80) {
-                      combinationsinfo.push({
-                        sancaiKey: temp5ecombe,
-                        value: nameScore,
-                        top: strockes,
-                        middle: midstrockes,
-                        bottom: endstrockes,
-                      });
-                    }
-                  }
-                }
+  let combinationsinfo = [];
+  let res = await asyncsql(
+    "select fiveelementcombination from sancaidata where (fiveelementcombination like ? and value >= 8)",
+    [sky5E + "%"]
+  );
+  if (res.length <= 0) {
+    return "nodata";
+  } else {
+    //  test
+    for (let z = 0; z < res.length; z++) {
+      let temp5ecombe = res[z].fiveelementcombination;
+      for (
+        let humanPara = strockes + 1;
+        humanPara <= strockes + 26;
+        humanPara++
+      ) {
+        let human5E = chinese5E[humanPara % 10];
+        if (human5E == temp5ecombe[1]) {
+          let midstrockes = humanPara - strockes;
+          for (
+            let groundPara = midstrockes + 1;
+            groundPara <= midstrockes + 26;
+            groundPara++
+          ) {
+            let ground5E = chinese5E[groundPara % 10];
+            if (ground5E == temp5ecombe[2]) {
+              let endstrockes = groundPara - midstrockes;
+              let nameScore = await getNameScore(
+                strockes,
+                midstrockes,
+                endstrockes
+              );
+              if (nameScore >= 80) {
+                combinationsinfo.push({
+                  sancaiKey: temp5ecombe,
+                  value: nameScore,
+                  top: strockes,
+                  middle: midstrockes,
+                  bottom: endstrockes,
+                });
               }
             }
           }
-          good(combinationsinfo);
         }
-      );
+      }
+    }
+    combinationsinfo.sort(function (a, b) {
+      return b.value - a.value;
     });
-    let result = await promise1.catch(function (err) {});
-    return result;
+    let combinationsinfoList = [];
+    for (let i = 0; i < combinationsinfo.length; i++) {
+      let temp =
+        combinationsinfo[i].sancaiKey +
+        ": " +
+        combinationsinfo[i].top +
+        "," +
+        combinationsinfo[i].middle +
+        "," +
+        combinationsinfo[i].bottom +
+        " (分數" +
+        combinationsinfo[i].value +
+        "分)";
+      combinationsinfoList.push(temp);
+    }
+    return combinationsinfoList;
   }
-  let combinationsinfo = await getcombinationsinfo(sky5E, strockes);
-  combinationsinfo.sort(function (a, b) {
-    return b.value - a.value;
-  });
-  let combinationsinfoList = [];
-  for (let i = 0; i < combinationsinfo.length; i++) {
-    let temp =
-      combinationsinfo[i].sancaiKey +
-      ": " +
-      combinationsinfo[i].top +
-      "," +
-      combinationsinfo[i].middle +
-      "," +
-      combinationsinfo[i].bottom +
-      " (分數" +
-      combinationsinfo[i].value +
-      "分)";
-    combinationsinfoList.push(temp);
-  }
-  return combinationsinfoList;
 }
 async function getNameScore(strockes, midstrockes, endstrockes) {
-  let promise2 = new Promise(function (good, bad) {
-    let nameScore = 0;
-    connection.query(
-      "select value from nameparameterscore where draw = ?",
-      [strockes + 1],
-      function (err, rows) {
-        nameScore += rows[0].value;
-        connection.query(
-          "select value from nameparameterscore where draw = ?",
-          [strockes + midstrockes],
-          function (err, rows) {
-            nameScore += rows[0].value;
-            connection.query(
-              "select value from nameparameterscore where draw = ?",
-              [midstrockes + endstrockes],
-              function (err, rows) {
-                nameScore += rows[0].value;
-                connection.query(
-                  "select value from nameparameterscore where draw = ?",
-                  [endstrockes + 1],
-                  function (err, rows) {
-                    nameScore += rows[0].value;
-                    connection.query(
-                      "select value from nameparameterscore where draw = ?",
-                      [strockes + midstrockes + endstrockes],
-                      function (err, rows) {
-                        nameScore += rows[0].value;
-                        nameScore *= 2;
-
-                        good(nameScore);
-                      }
-                    );
-                  }
-                );
-              }
-            );
-          }
-        );
-      }
-    );
-  });
-  let nameScore = await promise2.catch(function (err) {});
+  let res = await asyncsql(
+    "select value from nameparameterscore where draw in (?,?,?,?,?) ",
+    [
+      strockes + 1,
+      strockes + midstrockes,
+      midstrockes + endstrockes,
+      endstrockes + 1,
+      strockes + midstrockes + endstrockes,
+    ]
+  );
+  let nameScore =
+    res
+      .map((ele) => {
+        return ele.value;
+      })
+      .reduce((x, y) => {
+        return x + y;
+      }) * 2;
   return nameScore;
-  // if (paraScroes[strockes + 1 - 1] == undefined) {
-  //     return;
-  // }
-  // nameScore = paraScroes[strockes + 1 - 1].value;
-  // nameScore += paraScroes[strockes + midstrockes - 1].value;
-  // nameScore += paraScroes[midstrockes + endstrockes - 1].value;
-  // nameScore += paraScroes[endstrockes + 1 - 1].value;
-  // nameScore += paraScroes[strockes + midstrockes + endstrockes - 1].value;
-  // nameScore *= 2;
-  // return nameScore;
 }
 async function getWord(zodiacId, strockesList) {
-  async function getBetterMidWords(zodiacId, strockesList) {
-    let promise1 = new Promise(function (good, bad) {
-      connection.query(
-        "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 1 ",
-        [zodiacId, strockesList[1]],
-        function (err, rows) {
-          if (rows.length <= 0) {
-            bad([]);
-          } else if (err) {
-            bad(err);
-            return;
-          } else {
-            let betterMidWordList = rows[0].words;
-            good(betterMidWordList);
-          }
-        }
-      );
-    });
-    let result = await promise1.catch(function (err) {
-      return err;
-    });
-    if (result.length > 0) {
-      result = result.split("");
+  async function cookData(rawdata) {
+    if (rawdata.length <= 0) {
+      return [];
+    } else {
+      return rawdata[0].words.split("");
     }
-    return result;
   }
-  async function getBetterBotWords(zodiacId, strockesList) {
-    let promise1 = new Promise(function (good, bad) {
-      connection.query(
-        "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 1 ",
-        [zodiacId, strockesList[2]],
-        function (err, rows) {
-          if (rows.length <= 0) {
-            bad([]);
-          } else if (err) {
-            bad(err);
-            return;
-          } else {
-            let betterBotWordList = rows[0].words;
-            good(betterBotWordList);
-          }
+  async function cooknormalData(rawdata, site) {
+    if (rawdata.length <= 0) {
+      return [];
+    } else {
+      let temp = {};
+      rawdata.map((ele) => {
+        switch (ele.fiveelement) {
+          case "金":
+            temp["gold" + site] = ele.words.split("");
+            break;
+          case "木":
+            temp["tree" + site] = ele.words.split("");
+            break;
+          case "水":
+            temp["water" + site] = ele.words.split("");
+            break;
+          case "火":
+            temp["fire" + site] = ele.words.split("");
+            break;
+          case "土":
+            temp["ground" + site] = ele.words.split("");
+            break;
+          default:
+            break;
         }
-      );
-    });
-    let result = await promise1.catch(function (err) {
-      return err;
-    });
-    if (result.length > 0) {
-      result = result.split("");
+      });
+      return temp;
     }
-    return result;
   }
-  async function getbadMidWordList(zodiacId, strockesList) {
-    let promise1 = new Promise(function (good, bad) {
-      connection.query(
-        "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 0 ",
-        [zodiacId, strockesList[1]],
-        function (err, rows) {
-          if (rows.length <= 0) {
-            bad([]);
-          } else if (err) {
-            bad(err);
-            return;
-          } else {
-            let badMidWordList = rows[0].words;
-            good(badMidWordList);
-          }
-        }
-      );
-    });
-    let result = await promise1.catch(function (err) {
-      return err;
-    });
-    if (result.length > 0) {
-      result = result.split("");
-    }
-    return result;
-  }
-  async function getbadBotWordList(zodiacId, strockesList) {
-    let promise1 = new Promise(function (good, bad) {
-      connection.query(
-        "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 0 ",
-        [zodiacId, strockesList[2]],
-        function (err, rows) {
-          if (rows.length <= 0) {
-            bad([]);
-          } else if (err) {
-            bad(err);
-            return;
-          } else {
-            let badBotWordList = rows[0].words;
-            good(badBotWordList);
-          }
-        }
-      );
-    });
-    let result = await promise1.catch(function (err) {
-      return err;
-    });
-    if (result.length > 0) {
-      result = result.split("");
-    }
-    return result;
-  }
-  async function getnormalMidWordList(strockesList) {
-    let promise1 = new Promise(function (good, bad) {
-      connection.query(
-        "select words from chinesewords where fiveelement = ? and draw = ?",
-        ["金", strockesList[1]],
-        function (err, rows) {
-          if (err) {
-            bad(err);
-            return;
-          }
-          let goldMid = [];
-          if (rows.length > 0) {
-            goldMid = rows[0].words;
-            goldMid = goldMid.split("");
-          }
-          connection.query(
-            "select words from chinesewords where fiveelement = ? and draw = ?",
-            ["木", strockesList[1]],
-            function (err, rows) {
-              if (err) {
-                bad(err);
-                return;
-              }
-              let treeMid = [];
-              if (rows.length) {
-                treeMid = rows[0].words;
-                treeMid = treeMid.split("");
-              }
-              connection.query(
-                "select words from chinesewords where fiveelement = ? and draw = ?",
-                ["水", strockesList[1]],
-                function (err, rows) {
-                  if (err) {
-                    bad(err);
-                    return;
-                  }
-                  let waterMid = [];
-                  if (rows.length) {
-                    waterMid = rows[0].words;
-                    waterMid = waterMid.split("");
-                  }
-                  connection.query(
-                    "select words from chinesewords where fiveelement = ? and draw = ?",
-                    ["火", strockesList[1]],
-                    function (err, rows) {
-                      if (err) {
-                        bad(err);
-                        return;
-                      }
-                      let fireMid = [];
-                      if (rows.length) {
-                        fireMid = rows[0].words;
-                        fireMid = fireMid.split("");
-                      }
-                      connection.query(
-                        "select words from chinesewords where fiveelement = ? and draw = ?",
-                        ["土", strockesList[1]],
-                        function (err, rows) {
-                          if (err) {
-                            bad(err);
-                            return;
-                          }
-                          let groundMid = [];
-                          if (rows.length) {
-                            groundMid = rows[0].words;
-                            groundMid = groundMid.split("");
-                          }
-                          let normalMidWordList = {
-                            //回傳
-                            goldMid: goldMid,
-                            treeMid: treeMid,
-                            waterMid: waterMid,
-                            fireMid: fireMid,
-                            groundMid: groundMid,
-                          };
-                          good(normalMidWordList);
-                        }
-                      );
-                    }
-                  );
-                }
-              );
-            }
-          );
-        }
-      );
-    });
-    let result = await promise1.catch(function (err) {});
-    return result;
-  }
+  let betterMidWordList = await cookData(
+    await asyncsql(
+      "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 1 ",
+      [zodiacId, strockesList[1]]
+    )
+  );
+  let betterBotWordList = await cookData(
+    await asyncsql(
+      "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 1 ",
+      [zodiacId, strockesList[2]]
+    )
+  );
+  let badMidWordList = await cookData(
+    await asyncsql(
+      "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 0 ",
+      [zodiacId, strockesList[1]]
+    )
+  );
+  let badBotWordList = await cookData(
+    await asyncsql(
+      "select words from zodiacword where (zodiac = ? and draw = ?) and preferences = 0 ",
+      [zodiacId, strockesList[2]]
+    )
+  );
 
-  async function getnormalBotWordList(strockesList) {
-    let promise1 = new Promise(function (good, bad) {
-      connection.query(
-        "select words from chinesewords where fiveelement = ? and draw = ?",
-        ["金", strockesList[2]],
-        function (err, rows) {
-          if (err) {
-            bad(err);
-            return;
-          }
-          let goldBot = [];
-          if (rows.length > 0) {
-            goldBot = rows[0].words;
-            goldBot = goldBot.split("");
-          }
-          connection.query(
-            "select words from chinesewords where fiveelement = ? and draw = ?",
-            ["木", strockesList[2]],
-            function (err, rows) {
-              if (err) {
-                bad(err);
-                return;
-              }
-              let treeBot = [];
-              if (rows.length > 0) {
-                treeBot = rows[0].words;
-                treeBot = treeBot.split("");
-              }
-              connection.query(
-                "select words from chinesewords where fiveelement = ? and draw = ?",
-                ["水", strockesList[2]],
-                function (err, rows) {
-                  if (err) {
-                    bad(err);
-                    return;
-                  }
-                  let waterBot = [];
-                  if (rows.length > 0) {
-                    waterBot = rows[0].words;
-                    waterBot = waterBot.split("");
-                  }
-                  connection.query(
-                    "select words from chinesewords where fiveelement = ? and draw = ?",
-                    ["火", strockesList[2]],
-                    function (err, rows) {
-                      if (err) {
-                        bad(err);
-                        return;
-                      }
-                      let fireBot = [];
-                      if (rows.length > 0) {
-                        fireBot = rows[0].words;
-                        fireBot = fireBot.split("");
-                      }
-                      connection.query(
-                        "select words from chinesewords where fiveelement = ? and draw = ?",
-                        ["土", strockesList[2]],
-                        function (err, rows) {
-                          if (err) {
-                            bad(err);
-                            return;
-                          }
-                          let groundBot = [];
-                          if (rows.length > 0) {
-                            groundBot = rows[0].words;
-                            groundBot = groundBot.split("");
-                          }
-                          let normalBotWordList = {
-                            //回傳
-                            goldBot: goldBot,
-                            treeBot: treeBot,
-                            waterBot: waterBot,
-                            fireBot: fireBot,
-                            groundBot: groundBot,
-                          };
-                          good(normalBotWordList);
-                        }
-                      );
-                    }
-                  );
-                }
-              );
-            }
-          );
-        }
-      );
-    });
-    let result = await promise1.catch(function (err) {});
-    return result;
-  }
-
-  //回傳!
-  let betterMidWordList = await getBetterMidWords(zodiacId, strockesList);
-  let betterBotWordList = await getBetterBotWords(zodiacId, strockesList);
-  let badMidWordList = await getbadMidWordList(zodiacId, strockesList);
-  let badBotWordList = await getbadBotWordList(zodiacId, strockesList);
-  let normalMidWordList = await getnormalMidWordList(strockesList);
-  let normalBotWordList = await getnormalBotWordList(strockesList);
+  let normalMidWordList = await cooknormalData(
+    await asyncsql(
+      "select words, fiveelement from chinesewords where fiveelement in ('金','木','水','火','土') and draw = ?",
+      [strockesList[1]]
+    ),
+    "Mid"
+  );
+  let normalBotWordList = await cooknormalData(
+    await asyncsql(
+      "select words, fiveelement from chinesewords where fiveelement in ('金','木','水','火','土') and draw = ?",
+      [strockesList[2]]
+    ),
+    "Bot"
+  );
 
   let betterMidRepeats = {
     //回傳重複字的INDEX清單!
@@ -686,6 +420,7 @@ async function getWord(zodiacId, strockesList) {
     ground: (badBGround = []),
   };
   //重複字去除
+
   for (let z = normalMidWordList.goldMid.length - 1; z >= 0; z--) {
     if (
       betterMidWordList.indexOf(normalMidWordList.goldMid[z]) != -1 ||
@@ -954,4 +689,6 @@ app.get("/naming", function (req, res) {
 app.get("/namescore", function (req, res) {
   res.sendFile("./project1/pages/namescore.html", { root: __dirname });
 });
-
+// app.get("/sendfiles", function (req, res) {
+//   res.sendFile("./project1/pages/小專.pptx", { root: __dirname });
+// });
