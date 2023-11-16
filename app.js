@@ -322,7 +322,8 @@ async function getWord(zodiacId, strockesList) {
     if (rawdata.length <= 0) {
       return [];
     } else {
-      let temp = {};
+      let temp = {
+      };
       rawdata.map((ele) => {
         switch (ele.fiveelement) {
           case "金":
@@ -344,6 +345,11 @@ async function getWord(zodiacId, strockesList) {
             break;
         }
       });
+      if(temp["gold" + site]==undefined){temp["gold" + site]=[]};
+      if(temp["tree" + site]==undefined){temp["tree" + site]=[]};
+      if(temp["water" + site]==undefined){temp["water" + site]=[]};
+      if(temp["fire" + site]==undefined){temp["fire" + site]=[]};
+      if(temp["ground" + site]==undefined){temp["ground" + site]=[]};
       return temp;
     }
   }
@@ -420,7 +426,7 @@ async function getWord(zodiacId, strockesList) {
     ground: (badBGround = []),
   };
   //重複字去除
-
+ 
   for (let z = normalMidWordList.goldMid.length - 1; z >= 0; z--) {
     if (
       betterMidWordList.indexOf(normalMidWordList.goldMid[z]) != -1 ||
@@ -664,7 +670,7 @@ app.get("/getwords/:infos", async function (req, res) {
   let fiveElement = combination[0].slice(0, 3);
   let name5EsToClient = await get5EResult(fiveElement);
   let temp = combination[1];
-  let strockesList = temp.split(",");
+    let strockesList = temp.split(",");
   let paraScoresToClient = await addParaScores(strockesList, chinese5E);
   let top5EColor = addColor(infos[2]);
   let colorFiveElement = addColor(fiveElement);
@@ -689,6 +695,9 @@ app.get("/naming", function (req, res) {
 app.get("/namescore", function (req, res) {
   res.sendFile("./project1/pages/namescore.html", { root: __dirname });
 });
-// app.get("/sendfiles", function (req, res) {
-//   res.sendFile("./project1/pages/小專.pptx", { root: __dirname });
-// });
+app.get("/sendfiles", function (req, res) {
+  res.sendFile("./project1/pages/小專.pptx", { root: __dirname });
+});
+app.get("/okok",function (req,res){
+  res.send("https://drive.google.com/drive/folders/1UYBp_bP27ogMnM_nL8hf3EvKZZ6nW16L?usp=sharing");
+});

@@ -29,6 +29,10 @@ $(document).ready(async function () {
             return;
         };
         let combinationvalue = $("#combinationsinfo").val();
+        if (combinationvalue.length<=0) {
+            $.toast("選個組合吧!")
+            return;
+        }
         let result = await $.get(`/getwords/${zodiacId};${combinationvalue};${name5E}`);
         cleanData();
        
@@ -41,6 +45,216 @@ $(document).ready(async function () {
         addNormalMidWords(result);
         addNormalBotWords(result);
         addParaResult(result);
+        // 土 rgb(165, 42, 42) 水 rgb(0, 0, 255)  火rgb(255, 0, 0) 金rgb(184, 134, 11) 木rgb(79, 209, 56)
+       $("span[id^=betterMidWord]").sort(function(a, b){
+            let atemp=0;
+            let btemp=0;
+               
+            switch (a.style.color) {
+                case "darkgoldenrod":
+                    atemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    atemp = 2
+                    break;
+                case "blue":
+                    atemp = 3
+                    break;
+                case "red":
+                    atemp = 4
+                    break;
+                case "brown":
+                    atemp = 5
+                    break;
+                default:
+                    break;
+            };
+            switch (b.style.color) {
+                case "darkgoldenrod":
+                    btemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    btemp = 2
+                    break;
+                case "blue":
+                    btemp = 3
+                    break;
+                case "red":
+                    btemp = 4
+                    break;
+                case "brown":
+                    btemp = 5
+                    break;
+                default:
+                    break;
+            };
+    
+           if(atemp<btemp){
+            return -1;
+           } 
+            if(atemp>btemp){
+            return 1;
+           }
+            return 0;
+        }).appendTo("#goodMidWords");
+
+       $("span[id^=badMidWord]").sort(function(a, b){
+            let atemp=0;
+            let btemp=0;
+               
+            switch (a.style.color) {
+                case "darkgoldenrod":
+                    atemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    atemp = 2
+                    break;
+                case "blue":
+                    atemp = 3
+                    break;
+                case "red":
+                    atemp = 4
+                    break;
+                case "brown":
+                    atemp = 5
+                    break;
+                default:
+                    break;
+            };
+            switch (b.style.color) {
+                case "darkgoldenrod":
+                    btemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    btemp = 2
+                    break;
+                case "blue":
+                    btemp = 3
+                    break;
+                case "red":
+                    btemp = 4
+                    break;
+                case "brown":
+                    btemp = 5
+                    break;
+                default:
+                    break;
+            };
+    
+           if(atemp<btemp){
+            return -1;
+           } 
+            if(atemp>btemp){
+            return 1;
+           }
+            return 0;
+        }).appendTo("#badMidWords");
+
+       $("span[id^=betterBotWord]").sort(function(a, b){
+            let atemp=0;
+            let btemp=0;
+               
+            switch (a.style.color) {
+                case "darkgoldenrod":
+                    atemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    atemp = 2
+                    break;
+                case "blue":
+                    atemp = 3
+                    break;
+                case "red":
+                    atemp = 4
+                    break;
+                case "brown":
+                    atemp = 5
+                    break;
+                default:
+                    break;
+            };
+            switch (b.style.color) {
+                case "darkgoldenrod":
+                    btemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    btemp = 2
+                    break;
+                case "blue":
+                    btemp = 3
+                    break;
+                case "red":
+                    btemp = 4
+                    break;
+                case "brown":
+                    btemp = 5
+                    break;
+                default:
+                    break;
+            };
+    
+           if(atemp<btemp){
+            return -1;
+           } 
+            if(atemp>btemp){
+            return 1;
+           }
+            return 0;
+        }).appendTo("#goodBotWords");
+       $("span[id^=badBotWord]").sort(function(a, b){
+            let atemp=0;
+            let btemp=0;
+               
+            switch (a.style.color) {
+                case "darkgoldenrod":
+                    atemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    atemp = 2
+                    break;
+                case "blue":
+                    atemp = 3
+                    break;
+                case "red":
+                    atemp = 4
+                    break;
+                case "brown":
+                    atemp = 5
+                    break;
+                default:
+                    break;
+            };
+            switch (b.style.color) {
+                case "darkgoldenrod":
+                    btemp = 1
+                    break;
+                case "rgb(79, 209, 56)":
+                    btemp = 2
+                    break;
+                case "blue":
+                    btemp = 3
+                    break;
+                case "red":
+                    btemp = 4
+                    break;
+                case "brown":
+                    btemp = 5
+                    break;
+                default:
+                    break;
+            };
+    
+           if(atemp<btemp){
+            return -1;
+           } 
+            if(atemp>btemp){
+            return 1;
+           }
+            return 0;
+        }).appendTo("#badBotWords");
+        
+     
+        
     })
 
 })
@@ -157,5 +371,3 @@ function addGoodBadWordsColor(result) {
     result.wordList.badBotRepeats.fire.map((ele)=>{$(`#badBotWord${ele}`).css("color", "red");});
     result.wordList.badBotRepeats.ground.map((ele)=>{$(`#badBotWord${ele}`).css("color", "brown");});
 };
-
-
