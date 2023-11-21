@@ -8,7 +8,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-var fs = require("fs");
 const mysql = require("mysql");
 const { error, Console } = require("console");
 const { resolve } = require("path");
@@ -73,7 +72,7 @@ async function getStrockesList(targetName) {
   for (let i = 0; i < targetName.length; i++) {
     flag = false;
     let result = await getDraw(targetName[i]);
-    if (result == undefined) {
+    if (result == undefined || result =="nodata") {
       flag = true;
       continue;
     }
@@ -297,7 +296,7 @@ async function getNameScore(strockes, midstrockes, endstrockes) {
       strockes + midstrockes,
       midstrockes + endstrockes,
       endstrockes + 1,
-      strockes + midstrockes + endstrockes,
+      strockes + midstrockes + endstrockes
     ]
   );
   let nameScore =
@@ -426,7 +425,10 @@ async function getWord(zodiacId, strockesList) {
     ground: (badBGround = []),
   };
   //重複字去除
- 
+
+  // test
+
+
   for (let z = normalMidWordList.goldMid.length - 1; z >= 0; z--) {
     if (
       betterMidWordList.indexOf(normalMidWordList.goldMid[z]) != -1 ||
