@@ -323,18 +323,18 @@ function cleanData() {
     $("#totalScore").find("br").remove();
 };
 function addNormalMidWords(result) {
-    result.wordList.normalMidWordList.goldMid.map((ele)=>{$("#goldMid").append(`<span class="h2" style='color:darkgoldenrod;'> ${ele} </span>`)});
-    result.wordList.normalMidWordList.treeMid.map((ele)=>{$("#treeMid").append(`<span class="h2" style='color:rgb(79, 209, 56);'> ${ele} </span>`)});
-    result.wordList.normalMidWordList.waterMid.map((ele)=>{$("#waterMid").append(`<span class="h2" style='color:blue;'> ${ele} </span>`)});
-    result.wordList.normalMidWordList.fireMid.map((ele)=>{$("#fireMid").append(`<span class="h2"  style='color:red;'> ${ele} </span>`)});
-    result.wordList.normalMidWordList.groundMid.map((ele)=>{$("#groundMid").append(`<span class="h2" style='color:brown;'> ${ele} </span>`)});
+    result.wordList.normalMidWordList[0].map((ele)=>{$("#goldMid").append(`<span class="h2" style='color:darkgoldenrod;'> ${ele} </span>`)});
+    result.wordList.normalMidWordList[1].map((ele)=>{$("#treeMid").append(`<span class="h2" style='color:rgb(79, 209, 56);'> ${ele} </span>`)});
+    result.wordList.normalMidWordList[2].map((ele)=>{$("#waterMid").append(`<span class="h2" style='color:blue;'> ${ele} </span>`)});
+    result.wordList.normalMidWordList[3].map((ele)=>{$("#fireMid").append(`<span class="h2"  style='color:red;'> ${ele} </span>`)});
+    result.wordList.normalMidWordList[4].map((ele)=>{$("#groundMid").append(`<span class="h2" style='color:brown;'> ${ele} </span>`)});
 };
 function addNormalBotWords(result) {
-    result.wordList.normalBotWordList.goldBot.map((ele)=>{$("#goldBot").append(`<span class="h2" style='color:darkgoldenrod;'> ${ele} </span>`)});
-    result.wordList.normalBotWordList.treeBot.map((ele)=>{$("#treeBot").append(`<span class="h2" style='color:rgb(79, 209, 56);'> ${ele} </span>`)});
-    result.wordList.normalBotWordList.waterBot.map((ele)=>{$("#waterBot").append(`<span class="h2" style='color:blue;'> ${ele} </span>`)});
-    result.wordList.normalBotWordList.fireBot.map((ele)=>{$("#fireBot").append(`<span class="h2"  style='color:red;'> ${ele} </span>`)});
-    result.wordList.normalBotWordList.groundBot.map((ele)=>{$("#groundBot").append(`<span class="h2" style='color:brown;'> ${ele} </span>`)});
+    result.wordList.normalBotWordList[0].map((ele)=>{$("#goldBot").append(`<span class="h2" style='color:darkgoldenrod;'> ${ele} </span>`)});
+    result.wordList.normalBotWordList[1].map((ele)=>{$("#treeBot").append(`<span class="h2" style='color:rgb(79, 209, 56);'> ${ele} </span>`)});
+    result.wordList.normalBotWordList[2].map((ele)=>{$("#waterBot").append(`<span class="h2" style='color:blue;'> ${ele} </span>`)});
+    result.wordList.normalBotWordList[3].map((ele)=>{$("#fireBot").append(`<span class="h2"  style='color:red;'> ${ele} </span>`)});
+    result.wordList.normalBotWordList[4].map((ele)=>{$("#groundBot").append(`<span class="h2" style='color:brown;'> ${ele} </span>`)});
 };
 
 function putGoodBadWords(result) {

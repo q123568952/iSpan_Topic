@@ -321,34 +321,33 @@ async function getWord(zodiacId, strockesList) {
     if (rawdata.length <= 0) {
       return [];
     } else {
-      let temp = {
-      };
+      let temp = [];
       rawdata.map((ele) => {
         switch (ele.fiveelement) {
           case "金":
-            temp["gold" + site] = ele.words.split("");
+            temp[0] = ele.words.split("");
             break;
           case "木":
-            temp["tree" + site] = ele.words.split("");
+            temp[1] = ele.words.split("");
             break;
           case "水":
-            temp["water" + site] = ele.words.split("");
+            temp[2] = ele.words.split("");
             break;
           case "火":
-            temp["fire" + site] = ele.words.split("");
+            temp[3] = ele.words.split("");
             break;
           case "土":
-            temp["ground" + site] = ele.words.split("");
+            temp[4] = ele.words.split("");
             break;
           default:
             break;
         }
       });
-      if(temp["gold" + site]==undefined){temp["gold" + site]=[]};
-      if(temp["tree" + site]==undefined){temp["tree" + site]=[]};
-      if(temp["water" + site]==undefined){temp["water" + site]=[]};
-      if(temp["fire" + site]==undefined){temp["fire" + site]=[]};
-      if(temp["ground" + site]==undefined){temp["ground" + site]=[]};
+      if(temp[0]==undefined){temp[0]=[]};
+      if(temp[1]==undefined){temp[1]=[]};
+      if(temp[2]==undefined){temp[2]=[]};
+      if(temp[3]==undefined){temp[3]=[]};
+      if(temp[4]==undefined){temp[4]=[]};
       return temp;
     }
   }
@@ -429,152 +428,152 @@ async function getWord(zodiacId, strockesList) {
   // test
 
 
-  for (let z = normalMidWordList.goldMid.length - 1; z >= 0; z--) {
+  for (let z = normalMidWordList[0].length - 1; z >= 0; z--) {
     if (
-      betterMidWordList.indexOf(normalMidWordList.goldMid[z]) != -1 ||
-      badMidWordList.indexOf(normalMidWordList.goldMid[z]) != -1
+      betterMidWordList.indexOf(normalMidWordList[0][z]) != -1 ||
+      badMidWordList.indexOf(normalMidWordList[0][z]) != -1
     ) {
       betterMidRepeats.gold.push(
-        betterMidWordList.indexOf(normalMidWordList.goldMid[z])
+        betterMidWordList.indexOf(normalMidWordList[0][z])
       );
       badMidRepeats.gold.push(
-        badMidWordList.indexOf(normalMidWordList.goldMid[z])
+        badMidWordList.indexOf(normalMidWordList[0][z])
       );
-      normalMidWordList.goldMid.splice(z, 1);
+      normalMidWordList[0].splice(z, 1);
     }
   }
-  for (let z = normalMidWordList.treeMid.length - 1; z >= 0; z--) {
+  for (let z = normalMidWordList[1].length - 1; z >= 0; z--) {
     if (
-      betterMidWordList.indexOf(normalMidWordList.treeMid[z]) != -1 ||
-      badMidWordList.indexOf(normalMidWordList.treeMid[z]) != -1
+      betterMidWordList.indexOf(normalMidWordList[1][z]) != -1 ||
+      badMidWordList.indexOf(normalMidWordList[1][z]) != -1
     ) {
       betterMidRepeats.tree.push(
-        betterMidWordList.indexOf(normalMidWordList.treeMid[z])
+        betterMidWordList.indexOf(normalMidWordList[1][z])
       );
       badMidRepeats.tree.push(
-        badMidWordList.indexOf(normalMidWordList.treeMid[z])
+        badMidWordList.indexOf(normalMidWordList[1][z])
       );
-      normalMidWordList.treeMid.splice(z, 1);
+      normalMidWordList[1].splice(z, 1);
     }
   }
 
-  for (let z = normalMidWordList.waterMid.length - 1; z >= 0; z--) {
+  for (let z = normalMidWordList[2].length - 1; z >= 0; z--) {
     if (
-      betterMidWordList.indexOf(normalMidWordList.waterMid[z]) != -1 ||
-      badMidWordList.indexOf(normalMidWordList.waterMid[z]) != -1
+      betterMidWordList.indexOf(normalMidWordList[2][z]) != -1 ||
+      badMidWordList.indexOf(normalMidWordList[2][z]) != -1
     ) {
       betterMidRepeats.water.push(
-        betterMidWordList.indexOf(normalMidWordList.waterMid[z])
+        betterMidWordList.indexOf(normalMidWordList[2][z])
       );
       badMidRepeats.water.push(
-        badMidWordList.indexOf(normalMidWordList.waterMid[z])
+        badMidWordList.indexOf(normalMidWordList[2][z])
       );
-      normalMidWordList.waterMid.splice(z, 1);
+      normalMidWordList[2].splice(z, 1);
     }
   }
 
-  for (let z = normalMidWordList.fireMid.length - 1; z >= 0; z--) {
+  for (let z = normalMidWordList[3].length - 1; z >= 0; z--) {
     if (
-      betterMidWordList.indexOf(normalMidWordList.fireMid[z]) != -1 ||
-      badMidWordList.indexOf(normalMidWordList.fireMid[z]) != -1
+      betterMidWordList.indexOf(normalMidWordList[3][z]) != -1 ||
+      badMidWordList.indexOf(normalMidWordList[3][z]) != -1
     ) {
       betterMidRepeats.fire.push(
-        betterMidWordList.indexOf(normalMidWordList.fireMid[z])
+        betterMidWordList.indexOf(normalMidWordList[3][z])
       );
       badMidRepeats.fire.push(
-        badMidWordList.indexOf(normalMidWordList.fireMid[z])
+        badMidWordList.indexOf(normalMidWordList[3][z])
       );
-      normalMidWordList.fireMid.splice(z, 1);
+      normalMidWordList[3].splice(z, 1);
     }
   }
 
-  for (let z = normalMidWordList.groundMid.length - 1; z >= 0; z--) {
+  for (let z = normalMidWordList[4].length - 1; z >= 0; z--) {
     if (
-      betterMidWordList.indexOf(normalMidWordList.groundMid[z]) != -1 ||
-      badMidWordList.indexOf(normalMidWordList.groundMid[z]) != -1
+      betterMidWordList.indexOf(normalMidWordList[4][z]) != -1 ||
+      badMidWordList.indexOf(normalMidWordList[4][z]) != -1
     ) {
       betterMidRepeats.ground.push(
-        betterMidWordList.indexOf(normalMidWordList.groundMid[z])
+        betterMidWordList.indexOf(normalMidWordList[4][z])
       );
       badMidRepeats.ground.push(
-        badMidWordList.indexOf(normalMidWordList.groundMid[z])
+        badMidWordList.indexOf(normalMidWordList[4][z])
       );
-      normalMidWordList.groundMid.splice(z, 1);
+      normalMidWordList[4].splice(z, 1);
     }
   }
 
   //    名字二
-  for (let z = normalBotWordList.goldBot.length - 1; z >= 0; z--) {
+  for (let z = normalBotWordList[0].length - 1; z >= 0; z--) {
     if (
-      betterBotWordList.indexOf(normalBotWordList.goldBot[z]) != -1 ||
-      badBotWordList.indexOf(normalBotWordList.goldBot[z]) != -1
+      betterBotWordList.indexOf(normalBotWordList[0][z]) != -1 ||
+      badBotWordList.indexOf(normalBotWordList[0][z]) != -1
     ) {
       betterBotRepeats.gold.push(
-        betterBotWordList.indexOf(normalBotWordList.goldBot[z])
+        betterBotWordList.indexOf(normalBotWordList[0][z])
       );
       badBotRepeats.gold.push(
-        badBotWordList.indexOf(normalBotWordList.goldBot[z])
+        badBotWordList.indexOf(normalBotWordList[0][z])
       );
-      normalBotWordList.goldBot.splice(z, 1);
+      normalBotWordList[0].splice(z, 1);
     }
   }
-  for (let z = normalBotWordList.treeBot.length - 1; z >= 0; z--) {
+  for (let z = normalBotWordList[1].length - 1; z >= 0; z--) {
     if (
-      betterBotWordList.indexOf(normalBotWordList.treeBot[z]) != -1 ||
-      badBotWordList.indexOf(normalBotWordList.treeBot[z]) != -1
+      betterBotWordList.indexOf(normalBotWordList[1][z]) != -1 ||
+      badBotWordList.indexOf(normalBotWordList[1][z]) != -1
     ) {
       betterBotRepeats.tree.push(
-        betterBotWordList.indexOf(normalBotWordList.treeBot[z])
+        betterBotWordList.indexOf(normalBotWordList[1][z])
       );
       badBotRepeats.tree.push(
-        badBotWordList.indexOf(normalBotWordList.treeBot[z])
+        badBotWordList.indexOf(normalBotWordList[1][z])
       );
-      normalBotWordList.treeBot.splice(z, 1);
+      normalBotWordList[1].splice(z, 1);
     }
   }
 
-  for (let z = normalBotWordList.waterBot.length - 1; z >= 0; z--) {
+  for (let z = normalBotWordList[2].length - 1; z >= 0; z--) {
     if (
-      betterBotWordList.indexOf(normalBotWordList.waterBot[z]) != -1 ||
-      badBotWordList.indexOf(normalBotWordList.waterBot[z]) != -1
+      betterBotWordList.indexOf(normalBotWordList[2][z]) != -1 ||
+      badBotWordList.indexOf(normalBotWordList[2][z]) != -1
     ) {
       betterBotRepeats.water.push(
-        betterBotWordList.indexOf(normalBotWordList.waterBot[z])
+        betterBotWordList.indexOf(normalBotWordList[2][z])
       );
       badBotRepeats.water.push(
-        badBotWordList.indexOf(normalBotWordList.waterBot[z])
+        badBotWordList.indexOf(normalBotWordList[2][z])
       );
-      normalBotWordList.waterBot.splice(z, 1);
+      normalBotWordList[2].splice(z, 1);
     }
   }
 
-  for (let z = normalBotWordList.fireBot.length - 1; z >= 0; z--) {
+  for (let z = normalBotWordList[3].length - 1; z >= 0; z--) {
     if (
-      betterBotWordList.indexOf(normalBotWordList.fireBot[z]) != -1 ||
-      badBotWordList.indexOf(normalBotWordList.fireBot[z]) != -1
+      betterBotWordList.indexOf(normalBotWordList[3][z]) != -1 ||
+      badBotWordList.indexOf(normalBotWordList[3][z]) != -1
     ) {
       betterBotRepeats.fire.push(
-        betterBotWordList.indexOf(normalBotWordList.fireBot[z])
+        betterBotWordList.indexOf(normalBotWordList[3][z])
       );
       badBotRepeats.fire.push(
-        badBotWordList.indexOf(normalBotWordList.fireBot[z])
+        badBotWordList.indexOf(normalBotWordList[3][z])
       );
-      normalBotWordList.fireBot.splice(z, 1);
+      normalBotWordList[3].splice(z, 1);
     }
   }
 
-  for (let z = normalBotWordList.groundBot.length - 1; z >= 0; z--) {
+  for (let z = normalBotWordList[4].length - 1; z >= 0; z--) {
     if (
-      betterBotWordList.indexOf(normalBotWordList.groundBot[z]) != -1 ||
-      badBotWordList.indexOf(normalBotWordList.groundBot[z]) != -1
+      betterBotWordList.indexOf(normalBotWordList[4][z]) != -1 ||
+      badBotWordList.indexOf(normalBotWordList[4][z]) != -1
     ) {
       betterBotRepeats.ground.push(
-        betterBotWordList.indexOf(normalBotWordList.groundBot[z])
+        betterBotWordList.indexOf(normalBotWordList[4][z])
       );
       badBotRepeats.ground.push(
-        badBotWordList.indexOf(normalBotWordList.groundBot[z])
+        badBotWordList.indexOf(normalBotWordList[4][z])
       );
-      normalBotWordList.groundBot.splice(z, 1);
+      normalBotWordList[4].splice(z, 1);
     }
   }
 
@@ -696,10 +695,4 @@ app.get("/naming", function (req, res) {
 });
 app.get("/namescore", function (req, res) {
   res.sendFile("./project1/pages/namescore.html", { root: __dirname });
-});
-app.get("/sendfiles", function (req, res) {
-  res.sendFile("./project1/pages/小專.pptx", { root: __dirname });
-});
-app.get("/okok",function (req,res){
-  res.send("https://drive.google.com/drive/folders/1UYBp_bP27ogMnM_nL8hf3EvKZZ6nW16L?usp=sharing");
 });
